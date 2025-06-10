@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Japa Tracker</string>
+
+    <string name="welcome_screen_text_1">With every Japa, calm the mind and awaken the soul within.</string>
+    <string name="welcome_screen_text_2">The path to the divine begins from within you.</string>
+
+    <!--string messages-->
+    <string name="empty_japa_list_message">The first step to inner peace is just a tap away. Add your Japa now</string>
+    <string name="details_screen_target_message">Every chant brings you closer to inner peace — %d is your target.</string>
+    <string name="new_count_value_description">The number of Japas you chanted newly or the number of Japas you want to deduct from the current count.</string>
+
+    <!--app bar titles-->
+    <string name="japa_list">Japa List</string>
+    <string name="add_new_japa">Add New Japa</string>
+
+    <!--views labels-->
+    <string name="welcome_screen_button_text">Lets Get Started</string>
+    <string name="current_count">You have completed %d Japas so far.</string>
+    <string name="last_updated">You chanted %d Japas on %s</string>
+    <string name="active_status">This is an active on going Japa</string>
+    <string name="paused_status">You have suspended this Japa at the moment</string>
+    <string name="update_count">Update Count</string>
+    <string name="add">Add</string>
+    <string name="deduct">Deduct</string>
+
+</resources>
