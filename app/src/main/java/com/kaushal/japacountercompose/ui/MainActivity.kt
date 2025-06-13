@@ -6,8 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocal
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -19,7 +17,9 @@ import com.kaushal.japacountercompose.ui.composables.AddNewJapaScreen
 import com.kaushal.japacountercompose.ui.composables.JapaListScreen
 import com.kaushal.japacountercompose.ui.composables.WelcomeScreen
 import com.kaushal.japacountercompose.ui.theme.JapaCounterComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

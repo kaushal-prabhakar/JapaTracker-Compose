@@ -10,9 +10,10 @@ import com.kaushal.japacountercompose.data.JapaInfoDBEntity
 
 @Database(entities = [JapaInfoDBEntity::class], version = 1, exportSchema = false)
 @TypeConverters(TypeConverter::class)
-abstract class RoomDB: RoomDatabase() {
+abstract class RoomDB : RoomDatabase() {
 
-    abstract fun dao(): Dao
+    abstract fun dao(): RoomDBDao
+
     companion object {
         @Volatile
         private var DB_INSTANCE: RoomDB? = null

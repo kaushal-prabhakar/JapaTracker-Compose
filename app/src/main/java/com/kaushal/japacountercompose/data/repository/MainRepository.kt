@@ -10,13 +10,18 @@ interface MainRepository {
 
     suspend fun getMyJapaList(): List<JapaInfoEntities>
 
-    suspend fun getJapaDetails(name: String)
+    suspend fun getJapaDetails(name: String): JapaInfoEntities
 
-    suspend fun updateCurrentCount(name: String, newCount: Int, updatedType: UpdateType, time: LocalDateTime)
+    suspend fun updateCurrentCount(
+        name: String, newCount: Int, updatedValue: Int,
+        updatedType: UpdateType, time: LocalDateTime
+    )
 
     suspend fun completeJapa(name: String)
 
     suspend fun resetCounter(name: String)
+
+    suspend fun updateJapaTarget(name: String, target: Int)
 
     suspend fun deleteJapa(name: String)
 

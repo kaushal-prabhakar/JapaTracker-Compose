@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="large_text">20sp</dimen>
+    <dimen name="messages_text">16sp</dimen>
+    <dimen name="timings_text">12sp</dimen>
+</resources>

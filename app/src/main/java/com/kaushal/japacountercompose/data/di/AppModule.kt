@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -16,7 +17,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesRoomDB(context: Context) = RoomDB.getRoomDBInstance(context)
+    fun providesRoomDB(@ApplicationContext context: Context) = RoomDB.getRoomDBInstance(context)
 
     @Provides
     @Singleton

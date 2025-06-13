@@ -165,7 +165,7 @@ fun JapaDetailsContent(
 
 }
 
-@Preview
+
 @Composable
 fun UpdateCountDialog() {
     Dialog(onDismissRequest = {  }) {

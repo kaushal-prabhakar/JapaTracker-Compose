@@ -16,9 +16,9 @@ enum class UpdateType {
 
 data class JapaInfoEntities(
     val name: String,
-    val target: Int,
+    val target: Int?,
     val status: JapaStatus,
-    val currentCount: Int = 0,
+    val currentCount: Int,
     val lastUpdatedValue: Int,
     val lastUpdatedType: UpdateType,
     val lastUpdatedTime: String
