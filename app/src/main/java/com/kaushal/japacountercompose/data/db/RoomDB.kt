@@ -1,9 +1,6 @@
 package com.kaushal.japacountercompose.data.db
 
-import android.content.Context
-import androidx.room.Dao
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.kaushal.japacountercompose.data.JapaInfoDBEntity
@@ -13,21 +10,4 @@ import com.kaushal.japacountercompose.data.JapaInfoDBEntity
 abstract class RoomDB : RoomDatabase() {
 
     abstract fun dao(): RoomDBDao
-
-    companion object {
-        @Volatile
-        private var DB_INSTANCE: RoomDB? = null
-
-        fun getRoomDBInstance(context: Context): RoomDB {
-            return DB_INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    RoomDB::class.java,
-                    "JapaTracker"
-                ).build()
-                DB_INSTANCE = instance
-                instance
-            }
-        }
-    }
 }

@@ -1,9 +1,9 @@
 package com.kaushal.japacountercompose.data.di
 
 import android.content.Context
-import com.kaushal.japacountercompose.data.MoshiDateTimeAdapter
+import androidx.room.Room
 import com.kaushal.japacountercompose.data.db.RoomDB
-import com.squareup.moshi.Moshi
+import com.kaushal.japacountercompose.data.db.RoomDBDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,11 +17,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesRoomDB(@ApplicationContext context: Context) = RoomDB.getRoomDBInstance(context)
+    fun providesRoomDB(@ApplicationContext context: Context): RoomDB =
+        Room.databaseBuilder(
+            context.applicationContext,
+            RoomDB::class.java,
+            "JapaTracker"
+        ).build()
 
     @Provides
     @Singleton
-    fun providesMoshi(): Moshi = Moshi.Builder()
-        .add(MoshiDateTimeAdapter())
-        .build()
+    fun providesDao(db: RoomDB): RoomDBDao = db.dao()
 }
