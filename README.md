@@ -1,4 +1,4 @@
-# Japa Counter - Jetpack Compose
+# Japa Tracker
 
 Japa Counter is a lightweight, modern Android application built with Jetpack Compose designed to help users track and manage their Japa (chanting) counts efficiently. It provides a simple, private, and reliable way to maintain consistency in spiritual practices by storing all data locally on the device.
 
