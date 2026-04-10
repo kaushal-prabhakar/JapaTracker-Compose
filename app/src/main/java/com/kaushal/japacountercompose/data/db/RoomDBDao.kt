@@ -7,47 +7,43 @@ import androidx.room.Query
 import com.kaushal.japacountercompose.data.JapaInfoDBEntity
 import com.kaushal.japacountercompose.data.JapaStatus
 import com.kaushal.japacountercompose.data.UpdateType
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
 @Dao
 interface RoomDBDao {
 
     @Query("SELECT * FROM Japa_Info")
-    suspend fun getMyJapas(): List<JapaInfoDBEntity>
+    fun getMyJapas(): Flow<List<JapaInfoDBEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewJapa(japaInfoDBEntity: JapaInfoDBEntity): Long
 
+    @Query("SELECT * FROM Japa_Info WHERE rowId = :id")
+    fun getJapaById(id: Int): Flow<JapaInfoDBEntity?>
+
     @Query(
         "UPDATE Japa_Info SET CurrentCount = :newCount, LastUpdatedValue = :updatedValue, " +
-                "LastUpdatedType = :updatedType, LastUpdatedTime = :time WHERE JapaName = :name"
+                "LastUpdatedType = :updatedType, LastUpdatedTime = :time, Status = :status WHERE rowId = :id"
     )
     suspend fun updateCurrentCount(
-        name: String, newCount: Int, updatedValue: Int, updatedType: UpdateType,
-        time: LocalDateTime
+        id: Int, newCount: Int, updatedValue: Int, updatedType: UpdateType,
+        time: LocalDateTime, status: JapaStatus
     ): Int
 
-    @Query("SELECT CurrentCount FROM Japa_Info WHERE JapaName = :name")
-    suspend fun getCurrentCount(name: String): Int
+    @Query(
+        "UPDATE Japa_Info SET Status = :status, LastUpdatedTime = :updatedTime WHERE rowId = :id"
+    )
+    suspend fun completeJapa(id: Int, status: JapaStatus, updatedTime: LocalDateTime)
 
-    @Query("SELECT * FROM Japa_Info WHERE JapaName = :name")
-    suspend fun getJapaDetails(name: String): JapaInfoDBEntity
+    @Query("UPDATE Japa_Info SET Target = :target WHERE rowId = :id")
+    suspend fun updateJapaTarget(id: Int, target: Int)
 
     @Query(
-        "UPDATE Japa_Info SET status = :status, LastUpdatedTime = :updatedTime WHERE JapaName = :name"
+        "UPDATE Japa_Info SET CurrentCount = 0, LastUpdatedValue = 0, LastUpdatedTime = :time, Status = :status WHERE rowId = :id"
     )
-    suspend fun completeJapa(
-        name: String, status: JapaStatus, updatedTime: LocalDateTime
-    )
+    suspend fun resetJapaCounter(id: Int, time: LocalDateTime, status: JapaStatus)
 
-    @Query("UPDATE Japa_Info SET Target = :target WHERE JapaName = :name")
-    suspend fun updateJapaTarget(name: String, target: Int)
-
-    @Query(
-        "UPDATE Japa_Info SET CurrentCount = 0, LastUpdatedValue = 0, LastUpdatedTime = :time WHERE JapaName = :name"
-    )
-    suspend fun resetJapaCounter(name: String, time: LocalDateTime)
-
-    @Query("DELETE FROM Japa_Info WHERE JapaName = :name")
-    suspend fun deleteJapa(name: String)
+    @Query("DELETE FROM Japa_Info WHERE rowId = :id")
+    suspend fun deleteJapa(id: Int)
 }

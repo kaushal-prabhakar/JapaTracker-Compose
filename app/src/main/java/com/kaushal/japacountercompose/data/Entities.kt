@@ -4,10 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 enum class JapaStatus {
-    ACTIVE, COMPLETED
+    NOT_STARTED, ACTIVE, COMPLETED
 }
 
 enum class UpdateType {
@@ -15,13 +14,14 @@ enum class UpdateType {
 }
 
 data class JapaInfoEntities(
+    val id: Int = 0,
     val name: String,
     val target: Int?,
     val status: JapaStatus,
     val currentCount: Int,
     val lastUpdatedValue: Int,
     val lastUpdatedType: UpdateType,
-    val lastUpdatedTime: String
+    val lastUpdatedTime: LocalDateTime
 )
 
 @Entity(tableName = "Japa_Info")
@@ -34,20 +34,17 @@ data class JapaInfoDBEntity(
     @ColumnInfo(name = "LastUpdatedValue") val updatedValue: Int,
     @ColumnInfo(name = "LastUpdatedType") val updatedType: UpdateType,
     @ColumnInfo(name = "Status") val status: JapaStatus
-
 )
 
 fun JapaInfoDBEntity.toJapaInfoEntities(): JapaInfoEntities {
     return JapaInfoEntities(
+        id = this.rowId,
         name = this.name,
-        target = this.target ?: 0,
+        target = this.target,
         status = this.status,
         currentCount = this.currentCount,
         lastUpdatedValue = this.updatedValue,
         lastUpdatedType = this.updatedType,
-        lastUpdatedTime = this.lastUpdatedTime.format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"))
+        lastUpdatedTime = this.lastUpdatedTime
     )
-
 }
-
-

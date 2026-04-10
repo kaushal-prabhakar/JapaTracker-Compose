@@ -4,64 +4,64 @@ import com.kaushal.japacountercompose.data.JapaInfoDBEntity
 import com.kaushal.japacountercompose.data.JapaInfoEntities
 import com.kaushal.japacountercompose.data.JapaStatus
 import com.kaushal.japacountercompose.data.UpdateType
-import com.kaushal.japacountercompose.data.db.RoomDB
+import com.kaushal.japacountercompose.data.db.RoomDBDao
 import com.kaushal.japacountercompose.data.toJapaInfoEntities
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class MainRepositoryImpl @Inject constructor(private val roomDB: RoomDB) : MainRepository {
+class MainRepositoryImpl @Inject constructor(private val dao: RoomDBDao) : MainRepository {
 
-    private val dao = roomDB.dao()
-
-    override suspend fun addNewJapa(japaEntities: JapaInfoEntities) {
-        val roomDBEntities = JapaInfoDBEntity(
-            name = japaEntities.name,
-            target = japaEntities.target,
-            updatedValue = japaEntities.lastUpdatedValue,
-            lastUpdatedTime = LocalDateTime.now(),
-            currentCount = japaEntities.currentCount,
-            updatedType = japaEntities.lastUpdatedType,
-            status = japaEntities.status
-        )
-
-        val id = dao.addNewJapa(roomDBEntities)
-        println("inserted row id: $id")
-    }
-
-    override suspend fun getMyJapaList(): List<JapaInfoEntities> {
-        val roomDBEntities = dao.getMyJapas()
-        return roomDBEntities.map {
-            it.toJapaInfoEntities()
+    override fun getJapaList(): Flow<List<JapaInfoEntities>> {
+        return dao.getMyJapas().map { list ->
+            list.map { it.toJapaInfoEntities() }
         }
     }
 
-    override suspend fun getJapaDetails(name: String): JapaInfoEntities {
-        return dao.getJapaDetails(name).toJapaInfoEntities()
+    override fun getJapaById(id: Int): Flow<JapaInfoEntities?> {
+        return dao.getJapaById(id).map { it?.toJapaInfoEntities() }
     }
 
-    override suspend fun updateCurrentCount(
-        name: String,
-        newCount: Int,
-        updatedValue: Int,
-        updatedType: UpdateType,
-        time: LocalDateTime
+    override suspend fun addJapa(name: String, target: Int?): Long {
+        val entity = JapaInfoDBEntity(
+            name = name,
+            target = target,
+            lastUpdatedTime = LocalDateTime.now(),
+            currentCount = 0,
+            updatedValue = 0,
+            updatedType = UpdateType.INCREMENT,
+            status = JapaStatus.NOT_STARTED
+        )
+        return dao.addNewJapa(entity)
+    }
+
+    override suspend fun updateCount(
+        id: Int, newCount: Int, updatedValue: Int, updatedType: UpdateType
     ) {
-        dao.updateCurrentCount(name, newCount, updatedValue, updatedType, time)
+        dao.updateCurrentCount(
+            id = id,
+            newCount = newCount,
+            updatedValue = updatedValue,
+            updatedType = updatedType,
+            time = LocalDateTime.now(),
+            status = JapaStatus.ACTIVE
+        )
     }
 
-    override suspend fun completeJapa(name: String) {
-        dao.completeJapa(name, JapaStatus.COMPLETED, LocalDateTime.now())
+    override suspend fun updateTarget(id: Int, target: Int) {
+        dao.updateJapaTarget(id, target)
     }
 
-    override suspend fun resetCounter(name: String) {
-        dao.resetJapaCounter(name, LocalDateTime.now())
+    override suspend fun markComplete(id: Int) {
+        dao.completeJapa(id, JapaStatus.COMPLETED, LocalDateTime.now())
     }
 
-    override suspend fun updateJapaTarget(name: String, target: Int) {
-        dao.updateJapaTarget(name, target)
+    override suspend fun resetCounter(id: Int) {
+        dao.resetJapaCounter(id, LocalDateTime.now(), JapaStatus.NOT_STARTED)
     }
 
-    override suspend fun deleteJapa(name: String) {
-        dao.deleteJapa(name)
+    override suspend fun deleteJapa(id: Int) {
+        dao.deleteJapa(id)
     }
 }

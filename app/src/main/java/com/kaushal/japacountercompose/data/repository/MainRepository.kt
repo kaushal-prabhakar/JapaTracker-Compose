@@ -2,27 +2,23 @@ package com.kaushal.japacountercompose.data.repository
 
 import com.kaushal.japacountercompose.data.JapaInfoEntities
 import com.kaushal.japacountercompose.data.UpdateType
-import java.time.LocalDateTime
+import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
 
-    suspend fun addNewJapa(japaEntities: JapaInfoEntities)
+    fun getJapaList(): Flow<List<JapaInfoEntities>>
 
-    suspend fun getMyJapaList(): List<JapaInfoEntities>
+    fun getJapaById(id: Int): Flow<JapaInfoEntities?>
 
-    suspend fun getJapaDetails(name: String): JapaInfoEntities
+    suspend fun addJapa(name: String, target: Int?): Long
 
-    suspend fun updateCurrentCount(
-        name: String, newCount: Int, updatedValue: Int,
-        updatedType: UpdateType, time: LocalDateTime
-    )
+    suspend fun updateCount(id: Int, newCount: Int, updatedValue: Int, updatedType: UpdateType)
 
-    suspend fun completeJapa(name: String)
+    suspend fun updateTarget(id: Int, target: Int)
 
-    suspend fun resetCounter(name: String)
+    suspend fun markComplete(id: Int)
 
-    suspend fun updateJapaTarget(name: String, target: Int)
+    suspend fun resetCounter(id: Int)
 
-    suspend fun deleteJapa(name: String)
-
+    suspend fun deleteJapa(id: Int)
 }
