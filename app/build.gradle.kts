@@ -4,7 +4,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
     alias(libs.plugins.compose.compiler)
-    id("kotlin-kapt")
 }
 
 android {
@@ -43,9 +42,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -65,19 +61,15 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.play.services)
 
     // Room components
-    implementation (libs.androidx.room.runtime)
-    annotationProcessor (libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-
-    ksp(libs.androidx.room.compiler.v261)
+    ksp(libs.androidx.room.compiler)
 
     // dagger/hilt dependency injection
     implementation(libs.hilt.android)
@@ -87,10 +79,6 @@ dependencies {
 
     // timber for logging purpose
     implementation(libs.timber)
-
-    // moshi for serialization
-    implementation(libs.moshi)
-    ksp(libs.moshi.kotlin.codegen)
 
     // Unit/UI testing libraries
     testImplementation(libs.junit)
