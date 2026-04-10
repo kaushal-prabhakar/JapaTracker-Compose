@@ -2,32 +2,29 @@ package com.kaushal.japacountercompose.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaushal.japacountercompose.data.JapaInfoEntities
 import com.kaushal.japacountercompose.data.Outcome
 import com.kaushal.japacountercompose.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class JapaListViewModel @Inject constructor(
-    private val repository: MainRepository
+    repository: MainRepository
 ) : ViewModel() {
 
-    private val _japaListOutcome = MutableStateFlow(Outcome.loading())
-    val japaListOutcome = _japaListOutcome.asStateFlow()
-
-    fun getMyJapaList() {
-        viewModelScope.launch {
-            try {
-                _japaListOutcome.emit(Outcome.InProgress(true))
-                val result = repository.getMyJapaList()
-                _japaListOutcome.emit(Outcome.success(result))
-            } catch (ex: Exception) {
-                _japaListOutcome.emit(Outcome.failure(ex, ex.message.orEmpty()))
-            }
-        }
-    }
-
+    val japaListOutcome: StateFlow<Outcome<List<JapaInfoEntities>>> =
+        repository.getJapaList()
+            .map<List<JapaInfoEntities>, Outcome<List<JapaInfoEntities>>> { Outcome.Success(it) }
+            .catch { emit(Outcome.Failure(it, it.message.orEmpty())) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = Outcome.Loading
+            )
 }
