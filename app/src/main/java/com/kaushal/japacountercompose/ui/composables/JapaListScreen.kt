@@ -99,12 +99,13 @@ fun JapaListScreenContent(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(
-                    text = stringResource(id = R.string.japa_list),
-                    fontFamily = FontFamily.Monospace
-                )
-            },
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.japa_list),
+                        fontFamily = FontFamily.Monospace
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = BrandColor,
                     titleContentColor = Color.White,

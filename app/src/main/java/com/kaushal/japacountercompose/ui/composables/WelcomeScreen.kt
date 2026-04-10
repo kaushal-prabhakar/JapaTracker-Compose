@@ -40,11 +40,11 @@ import com.kaushal.japacountercompose.ui.theme.BrandColor
 @Composable
 fun WelcomeScreen(navController: NavHostController) {
 
-   WelcomeScreenContent(
-       onClick = {
-           navController.navigate(JapaAppScreens.japaList.name)
-       }
-   )
+    WelcomeScreenContent(
+        onClick = {
+            navController.navigate(JapaAppScreens.japaList.name)
+        }
+    )
 }
 
 @Composable
@@ -64,9 +64,9 @@ fun WelcomeScreenContent(onClick: () -> Unit) {
 
         Column(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(8.dp, 32.dp)
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp, 32.dp)
         ) {
 
             Spacer(

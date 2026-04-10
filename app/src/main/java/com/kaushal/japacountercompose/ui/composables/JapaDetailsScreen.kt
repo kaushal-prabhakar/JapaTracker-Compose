@@ -1,11 +1,9 @@
 package com.kaushal.japacountercompose.ui.composables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,8 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -36,7 +32,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.ui.theme.BrandColor
-import androidx.compose.foundation.layout.Arrangement
 
 @Composable
 fun JapaDetailsScreen(navController: NavController) {
@@ -62,9 +57,10 @@ fun JapaDetailsContent(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(text = "Details Screen", fontFamily = FontFamily.Monospace)
-            },
+            TopAppBar(
+                title = {
+                    Text(text = "Details Screen", fontFamily = FontFamily.Monospace)
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = BrandColor,
                     titleContentColor = Color.White,
