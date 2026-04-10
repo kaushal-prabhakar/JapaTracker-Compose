@@ -1,10 +1,9 @@
-@file:Suppress("CAST_NEVER_SUCCEEDS")
-
 package com.kaushal.japacountercompose.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +21,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -58,44 +56,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.data.JapaInfoEntities
+import com.kaushal.japacountercompose.data.JapaStatus
 import com.kaushal.japacountercompose.data.Outcome
+import com.kaushal.japacountercompose.data.UpdateType
 import com.kaushal.japacountercompose.ui.JapaAppScreens
 import com.kaushal.japacountercompose.ui.theme.AlphaBrandColor
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.theme.Completed
 import com.kaushal.japacountercompose.ui.theme.EmptyJapaListText
 import com.kaushal.japacountercompose.ui.viewmodels.JapaListViewModel
+import java.time.LocalDateTime
 
 
 @Composable
 fun JapaListScreen(navController: NavController, viewModel: JapaListViewModel = hiltViewModel()) {
+    val japaListOutcome by viewModel.japaListOutcome.collectAsState()
+
     JapaListScreenContent(
-        onItemClick = { item ->
-            navController.navigate(item.name)
+        onJapaClick = { japaId ->
+            navController.navigate("${JapaAppScreens.japaDetails.name}/$japaId")
+        },
+        onAddClick = {
+            navController.navigate(JapaAppScreens.addJapa.name)
         },
         onBackClick = {
             navController.popBackStack()
         },
-        viewModel
+        japaListOutcome = japaListOutcome
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JapaListScreenContent(
-    onItemClick: (JapaAppScreens) -> Unit,
+    onJapaClick: (Int) -> Unit,
+    onAddClick: () -> Unit,
     onBackClick: () -> Unit,
-    viewModel: JapaListViewModel
+    japaListOutcome: Outcome<List<JapaInfoEntities>>
 ) {
-
-    LaunchedEffect(Unit) {
-        viewModel.getMyJapaList()
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -110,54 +111,49 @@ fun JapaListScreenContent(
                     navigationIconContentColor = Color.White
                 ),
                 navigationIcon = {
-                    IconButton(onClick = {
-                        onBackClick()
-                    }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                    IconButton(onClick = { onBackClick() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    onItemClick(JapaAppScreens.addJapa)
-                },
+                onClick = { onAddClick() },
                 containerColor = BrandColor,
                 contentColor = Color.White,
                 modifier = Modifier.padding(16.dp),
             ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "add")
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Japa")
             }
         },
         floatingActionButtonPosition = FabPosition.End,
         content = { padding ->
-
-            val japaListOutcome by viewModel.japaListOutcome.collectAsState(initial = Outcome.loading())
-
             when (japaListOutcome) {
-                is Outcome.InProgress -> {
+                is Outcome.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
                 }
 
                 is Outcome.Failure -> {
-                    val msg = (japaListOutcome as Outcome.Failure).message
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            text = "Error loading Japa List $msg",
+                            text = "Error loading Japa List: ${japaListOutcome.message}",
                             color = Color.Red
                         )
                     }
                 }
 
-                is Outcome.Success<*> -> {
-                    val list = (japaListOutcome as Outcome.Success<*>).data
-                    if ((list as List<*>).isEmpty()) {
+                is Outcome.Success -> {
+                    val list = japaListOutcome.data
+                    if (list.isEmpty()) {
                         DisplayEmptyListMessage()
                     } else {
-                        JapaListItem(padding, list as List<JapaInfoEntities>)
+                        JapaListItem(padding, list, onJapaClick)
                     }
                 }
             }
@@ -165,7 +161,11 @@ fun JapaListScreenContent(
 }
 
 @Composable
-fun JapaListItem(padding: PaddingValues, japaList: List<JapaInfoEntities>) {
+fun JapaListItem(
+    padding: PaddingValues,
+    japaList: List<JapaInfoEntities>,
+    onJapaClick: (Int) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .padding(padding)
@@ -174,16 +174,16 @@ fun JapaListItem(padding: PaddingValues, japaList: List<JapaInfoEntities>) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(japaList) { item ->
-            JapaCard(japaInfoEntities = item)
+            JapaCard(japaInfoEntities = item, onClick = { onJapaClick(item.id) })
         }
     }
 }
 
 @Composable
-fun JapaCard(japaInfoEntities: JapaInfoEntities) {
+fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
 
     val progress = japaInfoEntities.target?.let {
-        japaInfoEntities.currentCount.toFloat() / it.toFloat()
+        if (it > 0) japaInfoEntities.currentCount.toFloat() / it.toFloat() else null
     }
 
     Card(
@@ -192,6 +192,7 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
+            .clickable { onClick() }
     ) {
 
         Row(
@@ -233,11 +234,13 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                InfoRow(label = "Target", value = japaInfoEntities.target.toString())
+                if (japaInfoEntities.target != null) {
+                    InfoRow(label = "Target", value = japaInfoEntities.target.toString())
+                }
                 InfoRow(label = "Current Count", value = japaInfoEntities.currentCount.toString())
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (progress != null && !progress.isNaN()) {
+                if (progress != null) {
                     LinearProgressIndicator(
                         progress = { progress.coerceIn(0f, 1f) },
                         modifier = Modifier
@@ -292,5 +295,23 @@ fun DisplayEmptyListMessage() {
 @Preview
 @Composable
 fun JapaListContentPreview() {
-    JapaListScreenContent(onItemClick = {}, onBackClick = {}, viewModel = viewModel())
+    JapaListScreenContent(
+        onJapaClick = {},
+        onAddClick = {},
+        onBackClick = {},
+        japaListOutcome = Outcome.Success(
+            listOf(
+                JapaInfoEntities(
+                    id = 1,
+                    name = "Maha Mantra",
+                    target = 108,
+                    status = JapaStatus.ACTIVE,
+                    currentCount = 54,
+                    lastUpdatedValue = 1,
+                    lastUpdatedType = UpdateType.INCREMENT,
+                    lastUpdatedTime = LocalDateTime.now()
+                )
+            )
+        )
+    )
 }

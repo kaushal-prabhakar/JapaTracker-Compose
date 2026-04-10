@@ -2,8 +2,6 @@ package com.kaushal.japacountercompose.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,9 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,12 +36,15 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.ui.theme.BrandColor
+import androidx.compose.foundation.layout.Arrangement
 
 @Composable
 fun JapaDetailsScreen(navController: NavController) {
-    JapaDetailsContent(onUpdateClick = {}, onDeleteClick = {}, onBackClick = {
-        navController.popBackStack()
-    })
+    JapaDetailsContent(
+        onUpdateClick = {},
+        onDeleteClick = {},
+        onBackClick = { navController.popBackStack() }
+    )
 }
 
 @Preview
@@ -72,14 +71,20 @@ fun JapaDetailsContent(
                     navigationIconContentColor = Color.White
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { onBackClick.invoke() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                    IconButton(onClick = { onBackClick() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
         },
         bottomBar = {
-            CustomLargeButton(onClick = { onUpdateClick.invoke() }, label = stringResource(id = R.string.update_count) )
+            CustomLargeButton(
+                onClick = { onUpdateClick() },
+                label = stringResource(id = R.string.update_count)
+            )
         },
 
         content = { padding ->
@@ -89,92 +94,33 @@ fun JapaDetailsContent(
                     .padding(padding)
                     .background(Color.White)
             ) {
-                Box(
+                // TODO: Replace hardcoded values with ViewModel-driven data in feature implementation
+                Text(
+                    text = "Japa Details — placeholder screen",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
-                ) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = painterResource(id = R.drawable.brand_logo_bg),
-                        contentDescription = null,
-                        contentScale = ContentScale.FillBounds
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.details_screen_target_message, 10000),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp, 40.dp, 8.dp, 0.dp)
-                            .align(Alignment.TopCenter),
-                        textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontSize = 24.sp,
-                        fontFamily = FontFamily.Monospace
-                    )
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.current_count, 5000),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        textAlign = TextAlign.Start,
-                        color = Color.Black,
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily.Monospace
-                    )
-
-                    Text(
-                        text = stringResource(
-                            id = R.string.last_updated,
-                            54,
-                            "19th May 2025 13:30"
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        textAlign = TextAlign.Start,
-                        color = Color.Black,
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily.Monospace
-                    )
-
-                    Text(
-                        text = stringResource(
-                            id = R.string.active_status,
-                            54,
-                            "19th May 2025 13:30"
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        textAlign = TextAlign.Start,
-                        color = Color.Black,
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily.Monospace
-                    )
-                }
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center,
+                    color = Color.Black,
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily.Monospace
+                )
             }
         }
     )
-
 }
 
 
 @Composable
 fun UpdateCountDialog() {
-    Dialog(onDismissRequest = {  }) {
+    Dialog(onDismissRequest = { }) {
         Card(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.padding(10.dp)
         ) {
             Column {
-                Text(text =  "Update Count",
+                Text(
+                    text = "Update Count",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
@@ -190,7 +136,7 @@ fun UpdateCountDialog() {
                         .padding(8.dp, 2.dp),
                     readOnly = true,
                     value = "current count",
-                    onValueChange = {  },
+                    onValueChange = { },
                     label = {
                         Text("Current Count", fontFamily = FontFamily.Monospace)
                     })
@@ -200,13 +146,14 @@ fun UpdateCountDialog() {
                         .fillMaxWidth()
                         .padding(8.dp, 2.dp),
                     value = "",
-                    onValueChange = {  },
+                    onValueChange = { },
                     label = {
                         Text("Enter New Count", fontFamily = FontFamily.Monospace)
                     }
                 )
 
-                Text(text =  stringResource(id = R.string.new_count_value_description),
+                Text(
+                    text = stringResource(id = R.string.new_count_value_description),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
@@ -237,7 +184,6 @@ fun UpdateCountDialog() {
                             .weight(1f)
                             .padding(8.dp)
                     )
-
                 }
             }
         }

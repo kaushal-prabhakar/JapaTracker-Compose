@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,18 +36,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.data.Outcome
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.viewmodels.AddNewJapaViewModel
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun AddNewJapaScreen(
     navController: NavController,
     newJapaViewModel: AddNewJapaViewModel = hiltViewModel()
 ) {
+    val isLoading by newJapaViewModel.isLoading.collectAsState()
+
     AddNewJapaScreenContent(
         onBackClick = {
             navController.popBackStack()
@@ -55,7 +57,11 @@ fun AddNewJapaScreen(
         onSaveClick = { name, target ->
             newJapaViewModel.addNewJapa(name, target)
         },
-        newJapaViewModel
+        isLoading = isLoading,
+        addNewJapaOutcome = newJapaViewModel.addNewJapaOutcome,
+        onSaveSuccess = {
+            navController.popBackStack()
+        }
     )
 }
 
@@ -65,25 +71,21 @@ fun AddNewJapaScreen(
 fun AddNewJapaScreenContent(
     onBackClick: () -> Unit,
     onSaveClick: (String, Int?) -> Unit,
-    newJapaViewModel: AddNewJapaViewModel
+    isLoading: Boolean,
+    addNewJapaOutcome: SharedFlow<Outcome<Unit>>,
+    onSaveSuccess: () -> Unit
 ) {
 
-    var nameText by remember {
-        mutableStateOf("")
-    }
-
-    var goalText by remember {
-        mutableStateOf("")
-    }
-
+    var nameText by remember { mutableStateOf("") }
+    var goalText by remember { mutableStateOf("") }
     val context = LocalContext.current
-    val isLoading by newJapaViewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
-        newJapaViewModel.addNewJapaOutcome.collect { result ->
+        addNewJapaOutcome.collect { result ->
             when (result) {
-                is Outcome.Success<*> -> {
+                is Outcome.Success -> {
                     Toast.makeText(context, "Japa Added Successfully", Toast.LENGTH_SHORT).show()
+                    onSaveSuccess()
                 }
 
                 is Outcome.Failure -> {
@@ -94,7 +96,7 @@ fun AddNewJapaScreenContent(
                     ).show()
                 }
 
-                else -> {}
+                is Outcome.Loading -> {}
             }
         }
     }
@@ -115,8 +117,11 @@ fun AddNewJapaScreenContent(
                         navigationIconContentColor = Color.White
                     ),
                     navigationIcon = {
-                        IconButton(onClick = { onBackClick.invoke() }) {
-                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                        IconButton(onClick = { onBackClick() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
                         }
                     }
                 )
@@ -125,12 +130,12 @@ fun AddNewJapaScreenContent(
             bottomBar = {
                 CustomLargeButton(
                     onClick = {
-                        if (nameText.isEmpty()) {
+                        if (nameText.isBlank()) {
                             Toast.makeText(context, "Japa Name cannot be empty", Toast.LENGTH_SHORT)
                                 .show()
                             return@CustomLargeButton
                         }
-                        onSaveClick.invoke(nameText, goalText.toIntOrNull())
+                        onSaveClick(nameText.trim(), goalText.toIntOrNull())
                     },
                     label = "Add",
                 )
@@ -150,7 +155,10 @@ fun AddNewJapaScreenContent(
                             .fillMaxWidth()
                             .padding(8.dp, 2.dp),
                         value = nameText,
-                        onValueChange = { nameText = it },
+                        onValueChange = { if (it.length <= 30) nameText = it },
+                        supportingText = {
+                            Text("${nameText.length}/30", fontFamily = FontFamily.Monospace)
+                        },
                         label = {
                             Text("Enter Japa Name", fontFamily = FontFamily.Monospace)
                         })
@@ -164,7 +172,6 @@ fun AddNewJapaScreenContent(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         label = {
                             Text("Set Goal", fontFamily = FontFamily.Monospace)
-
                         })
                 }
             }
@@ -174,7 +181,6 @@ fun AddNewJapaScreenContent(
             ShowLoader()
         }
     }
-
 }
 
 @Composable
@@ -195,6 +201,8 @@ fun AddNewJapaScreenPreview() {
     AddNewJapaScreenContent(
         onBackClick = {},
         onSaveClick = { _, _ -> },
-        newJapaViewModel = viewModel()
+        isLoading = false,
+        addNewJapaOutcome = kotlinx.coroutines.flow.MutableSharedFlow(),
+        onSaveSuccess = {}
     )
 }

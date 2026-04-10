@@ -13,6 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 val BrandColor = Color(0xFF452112)
 val AlphaBrandColor = BrandColor.copy(0.5f)
 
+val NotStarted = Color(0xFFBDBDBD)
 val Active = Color(0xFF819DC7)
 val Completed = Color(0xFF81C784)
 
