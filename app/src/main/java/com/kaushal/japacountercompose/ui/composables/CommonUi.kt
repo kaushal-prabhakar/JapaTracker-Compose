@@ -26,9 +26,10 @@ import com.kaushal.japacountercompose.ui.theme.Completed
 import com.kaushal.japacountercompose.ui.theme.NotStarted
 
 @Composable
-fun CustomLargeButton(onClick: () -> Unit, label: String) {
+fun CustomLargeButton(onClick: () -> Unit, label: String, enabled: Boolean = true) {
     Button(
         onClick = { onClick.invoke() },
+        enabled = enabled,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
@@ -44,9 +45,10 @@ fun CustomLargeButton(onClick: () -> Unit, label: String) {
 }
 
 @Composable
-fun CustomSmallButton(onClick: () -> Unit, label: String, modifier: Modifier = Modifier) {
+fun CustomSmallButton(onClick: () -> Unit, label: String, modifier: Modifier = Modifier, enabled: Boolean = true) {
     Button(
         onClick = { onClick.invoke() },
+        enabled = enabled,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(containerColor = BrandColor)
     ) {

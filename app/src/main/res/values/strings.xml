@@ -12,9 +12,17 @@
     <!--app bar titles-->
     <string name="japa_list">Japa List</string>
     <string name="add_new_japa">Add New Japa</string>
+    <string name="japa_details">Japa Details</string>
 
     <!--views labels-->
     <string name="welcome_screen_button_text">Lets Get Started</string>
+    <string name="delete_japa">Delete Japa</string>
+    <string name="loading">Loading…</string>
+    <string name="error_loading_details">Failed to load japa details.</string>
+    <string name="enter_count">Enter Count</string>
+    <string name="of_target">of %d</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="operation_failed">Operation failed. Please try again.</string>
     <string name="current_count">You have completed %d Japas so far.</string>
     <string name="last_updated">You chanted %d Japas on %s</string>
     <string name="active_status">This is an active on going Japa</string>
