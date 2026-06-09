@@ -1,10 +1,10 @@
-package com.kaushal.japacountercompose.ui.viewmodels
+package com.kaushal.japacountercompose.ui.feature.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaushal.japacountercompose.data.JapaInfoEntities
-import com.kaushal.japacountercompose.data.Outcome
-import com.kaushal.japacountercompose.data.repository.MainRepository
+import com.kaushal.japacountercompose.domain.JapaInfoEntities
+import com.kaushal.japacountercompose.domain.MainRepository
+import com.kaushal.japacountercompose.domain.Outcome
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +24,7 @@ class JapaListViewModel @Inject constructor(
             .catch { emit(Outcome.Failure(it, it.message.orEmpty())) }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
+                started = SharingStarted.Companion.WhileSubscribed(5000),
                 initialValue = Outcome.Loading
             )
 }

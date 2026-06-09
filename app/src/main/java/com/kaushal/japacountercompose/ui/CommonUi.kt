@@ -1,4 +1,4 @@
-package com.kaushal.japacountercompose.ui.composables
+package com.kaushal.japacountercompose.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kaushal.japacountercompose.data.JapaStatus
+import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.ui.theme.Active
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.theme.Completed

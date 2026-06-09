@@ -1,6 +1,6 @@
-package com.kaushal.japacountercompose.data.di
+package com.kaushal.japacountercompose.di
 
-import com.kaushal.japacountercompose.data.repository.MainRepository
+import com.kaushal.japacountercompose.domain.MainRepository
 import com.kaushal.japacountercompose.data.repository.MainRepositoryImpl
 import dagger.Binds
 import dagger.Module

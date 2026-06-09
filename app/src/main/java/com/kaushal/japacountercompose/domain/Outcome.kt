@@ -1,4 +1,4 @@
-package com.kaushal.japacountercompose.data
+package com.kaushal.japacountercompose.domain
 
 sealed class Outcome<out T> {
 

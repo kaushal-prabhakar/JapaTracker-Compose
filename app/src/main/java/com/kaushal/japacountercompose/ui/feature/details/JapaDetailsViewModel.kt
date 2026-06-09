@@ -1,12 +1,12 @@
-package com.kaushal.japacountercompose.ui.viewmodels
+package com.kaushal.japacountercompose.ui.feature.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaushal.japacountercompose.data.JapaInfoEntities
-import com.kaushal.japacountercompose.data.Outcome
-import com.kaushal.japacountercompose.data.UpdateType
-import com.kaushal.japacountercompose.data.repository.MainRepository
+import com.kaushal.japacountercompose.domain.JapaInfoEntities
+import com.kaushal.japacountercompose.domain.MainRepository
+import com.kaushal.japacountercompose.domain.Outcome
+import com.kaushal.japacountercompose.domain.UpdateType
 import com.kaushal.japacountercompose.ui.JapaAppScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

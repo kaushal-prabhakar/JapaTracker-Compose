@@ -13,10 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.kaushal.japacountercompose.ui.composables.AddNewJapaScreen
-import com.kaushal.japacountercompose.ui.composables.JapaDetailsScreen
-import com.kaushal.japacountercompose.ui.composables.JapaListScreen
-import com.kaushal.japacountercompose.ui.composables.WelcomeScreen
+import com.kaushal.japacountercompose.ui.feature.add.AddNewJapaScreen
+import com.kaushal.japacountercompose.ui.feature.details.JapaDetailsScreen
+import com.kaushal.japacountercompose.ui.feature.list.JapaListScreen
 import com.kaushal.japacountercompose.ui.theme.JapaCounterComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -1,11 +1,12 @@
 package com.kaushal.japacountercompose.data.repository
 
-import com.kaushal.japacountercompose.data.JapaInfoDBEntity
-import com.kaushal.japacountercompose.data.JapaInfoEntities
-import com.kaushal.japacountercompose.data.JapaStatus
-import com.kaushal.japacountercompose.data.UpdateType
+import com.kaushal.japacountercompose.data.db.JapaInfoDBEntity
 import com.kaushal.japacountercompose.data.db.RoomDBDao
-import com.kaushal.japacountercompose.data.toJapaInfoEntities
+import com.kaushal.japacountercompose.data.db.toJapaInfoEntities
+import com.kaushal.japacountercompose.domain.JapaInfoEntities
+import com.kaushal.japacountercompose.domain.JapaStatus
+import com.kaushal.japacountercompose.domain.MainRepository
+import com.kaushal.japacountercompose.domain.UpdateType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime

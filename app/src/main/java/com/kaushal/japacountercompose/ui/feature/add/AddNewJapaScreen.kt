@@ -1,4 +1,4 @@
-package com.kaushal.japacountercompose.ui.composables
+package com.kaushal.japacountercompose.ui.feature.add
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -38,9 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.kaushal.japacountercompose.R
-import com.kaushal.japacountercompose.data.Outcome
+import com.kaushal.japacountercompose.domain.Outcome
+import com.kaushal.japacountercompose.ui.CustomLargeButton
 import com.kaushal.japacountercompose.ui.theme.BrandColor
-import com.kaushal.japacountercompose.ui.viewmodels.AddNewJapaViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
@@ -202,7 +203,7 @@ fun AddNewJapaScreenPreview() {
         onBackClick = {},
         onSaveClick = { _, _ -> },
         isLoading = false,
-        addNewJapaOutcome = kotlinx.coroutines.flow.MutableSharedFlow(),
+        addNewJapaOutcome = MutableSharedFlow(),
         onSaveSuccess = {}
     )
 }

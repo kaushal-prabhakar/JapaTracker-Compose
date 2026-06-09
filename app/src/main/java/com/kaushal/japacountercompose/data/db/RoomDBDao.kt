@@ -4,9 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.kaushal.japacountercompose.data.JapaInfoDBEntity
-import com.kaushal.japacountercompose.data.JapaStatus
-import com.kaushal.japacountercompose.data.UpdateType
+import com.kaushal.japacountercompose.domain.JapaStatus
+import com.kaushal.japacountercompose.domain.UpdateType
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 

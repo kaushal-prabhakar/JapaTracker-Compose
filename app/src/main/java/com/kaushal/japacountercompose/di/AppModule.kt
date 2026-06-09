@@ -1,4 +1,4 @@
-package com.kaushal.japacountercompose.data.di
+package com.kaushal.japacountercompose.di
 
 import android.content.Context
 import androidx.room.Room

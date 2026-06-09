@@ -1,4 +1,4 @@
-package com.kaushal.japacountercompose.ui.composables
+package com.kaushal.japacountercompose.ui.feature.details
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -53,14 +53,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.kaushal.japacountercompose.R
-import com.kaushal.japacountercompose.data.JapaInfoEntities
-import com.kaushal.japacountercompose.data.JapaStatus
-import com.kaushal.japacountercompose.data.Outcome
-import com.kaushal.japacountercompose.data.UpdateType
+import com.kaushal.japacountercompose.domain.JapaInfoEntities
+import com.kaushal.japacountercompose.domain.JapaStatus
+import com.kaushal.japacountercompose.domain.Outcome
+import com.kaushal.japacountercompose.domain.UpdateType
+import com.kaushal.japacountercompose.ui.CustomLargeButton
+import com.kaushal.japacountercompose.ui.CustomSmallButton
+import com.kaushal.japacountercompose.ui.StatusBadge
 import com.kaushal.japacountercompose.ui.theme.AlphaBrandColor
 import com.kaushal.japacountercompose.ui.theme.BrandColor
-import com.kaushal.japacountercompose.ui.viewmodels.JapaDetailsAction
-import com.kaushal.japacountercompose.ui.viewmodels.JapaDetailsViewModel
 import java.time.LocalDateTime
 
 @Composable

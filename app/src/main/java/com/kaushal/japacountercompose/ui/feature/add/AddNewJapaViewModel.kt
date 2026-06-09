@@ -1,9 +1,9 @@
-package com.kaushal.japacountercompose.ui.viewmodels
+package com.kaushal.japacountercompose.ui.feature.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kaushal.japacountercompose.data.Outcome
-import com.kaushal.japacountercompose.data.repository.MainRepository
+import com.kaushal.japacountercompose.domain.MainRepository
+import com.kaushal.japacountercompose.domain.Outcome
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

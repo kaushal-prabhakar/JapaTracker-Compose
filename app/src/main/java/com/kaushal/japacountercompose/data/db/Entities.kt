@@ -1,28 +1,12 @@
-package com.kaushal.japacountercompose.data
+package com.kaushal.japacountercompose.data.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kaushal.japacountercompose.domain.JapaInfoEntities
+import com.kaushal.japacountercompose.domain.JapaStatus
+import com.kaushal.japacountercompose.domain.UpdateType
 import java.time.LocalDateTime
-
-enum class JapaStatus {
-    NOT_STARTED, ACTIVE, COMPLETED
-}
-
-enum class UpdateType {
-    INCREMENT, DECREMENT
-}
-
-data class JapaInfoEntities(
-    val id: Int = 0,
-    val name: String,
-    val target: Int?,
-    val status: JapaStatus,
-    val currentCount: Int,
-    val lastUpdatedValue: Int,
-    val lastUpdatedType: UpdateType,
-    val lastUpdatedTime: LocalDateTime
-)
 
 @Entity(tableName = "Japa_Info")
 data class JapaInfoDBEntity(

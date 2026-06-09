@@ -1,7 +1,5 @@
-package com.kaushal.japacountercompose.data.repository
+package com.kaushal.japacountercompose.domain
 
-import com.kaushal.japacountercompose.data.JapaInfoEntities
-import com.kaushal.japacountercompose.data.UpdateType
 import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
