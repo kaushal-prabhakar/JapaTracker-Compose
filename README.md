@@ -40,17 +40,20 @@ The project follows the **MVVM (Model-View-ViewModel)** architectural pattern co
 ```text
 com.kaushal.japacountercompose/
 ├── data/
-│   ├── db/            # Room Database and DAO
-│   ├── di/            # Hilt Dependency Injection modules
-│   ├── repository/    # Repository interfaces and implementations
-│   ├── Entities.kt    # Domain and DB models
-│   └── Outcome.kt     # Sealed class for state handling
-├── ui/
-│   ├── composables/   # Jetpack Compose UI components and screens
-│   ├── theme/         # Material3 theme definitions (Color, Type, Theme)
-│   ├── viewmodels/    # ViewModels for UI state management
-│   └── JapaApp.kt     # Navigation host and app entry point
-└── ApplicationClass.kt # Hilt Application class
+│   ├── db/                 # Room Database, DAOs, and DB-specific Entities
+│   └── repository/         # Implementation of Domain Repositories
+├── di/                     # Hilt Dependency Injection modules
+├── domain/                 # Pure logic: Repository interfaces, Models, and Outcome sealed class
+├── ui/                     # UI Layer (Jetpack Compose)
+│   ├── feature/            # Feature-based screens and their respective ViewModels
+│   │   ├── add/            # Add New Japa feature
+│   │   ├── details/        # Japa Details and Analytics feature
+│   │   └── list/           # Main Dashboard / Japa List feature
+│   ├── theme/              # Material3 design system (Color, Type, Theme)
+│   ├── CommonUi.kt         # Reusable UI components (Buttons, Badges, etc.)
+│   ├── JapaApp.kt          # Navigation Graph and App Entry Composable
+│   └── WelcomeScreen.kt    # Onboarding / Splash screen
+└── ApplicationClass.kt     # Hilt Application entry point
 ```
 
 ## Getting Started
