@@ -2,6 +2,7 @@ package com.kaushal.japacountercompose.ui.feature.details
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,13 +13,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +36,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -57,12 +67,17 @@ import com.kaushal.japacountercompose.domain.JapaInfoEntities
 import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.domain.Outcome
 import com.kaushal.japacountercompose.domain.UpdateType
-import com.kaushal.japacountercompose.ui.CustomLargeButton
 import com.kaushal.japacountercompose.ui.CustomSmallButton
+import com.kaushal.japacountercompose.ui.IconButton
+import com.kaushal.japacountercompose.ui.OutlinedButton
 import com.kaushal.japacountercompose.ui.StatusBadge
+import com.kaushal.japacountercompose.ui.icons.ArrowDownIcon
+import com.kaushal.japacountercompose.ui.icons.ArrowUpIcon
+import com.kaushal.japacountercompose.ui.icons.ClockIcon
 import com.kaushal.japacountercompose.ui.theme.AlphaBrandColor
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun JapaDetailsScreen(
@@ -73,6 +88,7 @@ fun JapaDetailsScreen(
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var showUpdateDialog by remember { mutableStateOf(false) }
+    var showIncompleteWarningDialog by remember { mutableStateOf(false) }
 
     val operationFailedMessage = stringResource(id = R.string.operation_failed)
 
@@ -111,6 +127,19 @@ fun JapaDetailsScreen(
                 japaInfo = state.data,
                 isLoading = isLoading,
                 snackbarHostState = snackbarHostState,
+                onComplete = {
+                    if (state.data.target != null) {
+                        if (state.data.currentCount < state.data.target) {
+                            showIncompleteWarningDialog = true
+                        } else {
+                            showIncompleteWarningDialog = false
+                            viewModel.markComplete()
+                        }
+                    } else {
+                        showIncompleteWarningDialog = false
+                        viewModel.markComplete()
+                    }
+                },
                 onUpdateClick = { showUpdateDialog = true },
                 onDeleteClick = { viewModel.deleteJapa() },
                 onBackClick = { navController.popBackStack() }
@@ -128,6 +157,27 @@ fun JapaDetailsScreen(
                     onDeduct = { value ->
                         viewModel.decrementCount(value)
                         showUpdateDialog = false
+                    }
+                )
+            }
+
+            if (showIncompleteWarningDialog) {
+                AlertDialog(
+                    onDismissRequest = { showIncompleteWarningDialog = false },
+                    title = { Text("Mark as Complete?") },
+                    text = {
+                        Text("Your current count has not reached the target count yet, Complete anyway?")
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            viewModel.markComplete()
+                            showIncompleteWarningDialog = false
+                        }) { Text("Yes, Complete") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showIncompleteWarningDialog = false
+                        }) { Text("Cancel") }
                     }
                 )
             }
@@ -215,24 +265,49 @@ private fun JapaDetailsContent(
     japaInfo: JapaInfoEntities,
     isLoading: Boolean,
     snackbarHostState: SnackbarHostState,
+    onComplete: () -> Unit,
     onUpdateClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     Scaffold(
         topBar = { JapaDetailsTopBar(onBackClick = onBackClick) },
+        floatingActionButton = {
+            if (japaInfo.status != JapaStatus.COMPLETED) {
+                FloatingActionButton(
+                    onClick = { onUpdateClick() },
+                    containerColor = BrandColor,
+                    contentColor = Color.White,
+                    modifier = Modifier.padding(16.dp),
+                ) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Update")
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
-            Column {
-                CustomLargeButton(
-                    onClick = onUpdateClick,
-                    label = stringResource(id = R.string.update_count),
-                    enabled = !isLoading
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                IconButton(
+                    onClick = onComplete,
+                    label = stringResource(id = R.string.mark_complete),
+                    enabled = !isLoading,
+                    imageVector = Icons.Default.Done,
+                    contentDescription = "Complete",
+                    modifier = Modifier.weight(1f)
                 )
-                CustomLargeButton(
+                OutlinedButton(
                     onClick = onDeleteClick,
                     label = stringResource(id = R.string.delete_japa),
-                    enabled = !isLoading
+                    enabled = !isLoading,
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    modifier = Modifier.weight(1f)
                 )
             }
         },
@@ -240,13 +315,13 @@ private fun JapaDetailsContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
-                    .background(Color.White),
+                    .padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 HeroHeaderSection(japaInfo = japaInfo)
+                PreviousSessionDetails(japaInfo = japaInfo)
             }
-        }
+        },
     )
 }
 
@@ -326,6 +401,100 @@ private fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
 }
 
 @Composable
+fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = "Last Session",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace,
+                color = BrandColor
+            ),
+            textAlign = TextAlign.Start
+        )
+
+        Card(
+            shape = RoundedCornerShape(4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 12.dp, 0.dp, 0.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(BrandColor.copy(alpha = 0.2f))
+                    .padding(12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = ClockIcon,
+                        contentDescription = "Last updated time",
+                        tint = BrandColor
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = japaInfo.lastUpdatedTime,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace,
+                            color = BrandColor
+                        ),
+                        textAlign = TextAlign.End
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                ) {
+
+                    var type = "Added"
+                    if (japaInfo.lastUpdatedType == UpdateType.INCREMENT) {
+                        Icon(
+                            imageVector = ArrowUpIcon,
+                            contentDescription = UpdateType.INCREMENT.name,
+                            tint = BrandColor
+                        )
+                    } else {
+                        Icon(
+                            imageVector = ArrowDownIcon,
+                            contentDescription = UpdateType.DECREMENT.name,
+                            tint = BrandColor
+                        )
+                        type = "Deducted"
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = type + " " + japaInfo.lastUpdatedValue.toString(),
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace,
+                            color = BrandColor
+                        ),
+                        textAlign = TextAlign.End
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun UpdateCountDialog(
     currentCount: Int,
     isLoading: Boolean,
@@ -342,21 +511,36 @@ private fun UpdateCountDialog(
             modifier = Modifier.padding(10.dp)
         ) {
             Column {
-                Text(
-                    text = stringResource(id = R.string.update_count),
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
-                    textAlign = TextAlign.Center,
-                    color = Color.Black,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily.Monospace
-                )
+                        .padding(top = 4.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.update_count),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(8.dp),
+                        textAlign = TextAlign.Center,
+                        color = Color.Black,
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily.Monospace
+                    )
+
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close Dialog",
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(8.dp)
+                            .clickable { onDismiss() }
+                    )
+                }
 
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp, 2.dp),
+                        .padding(8.dp, 8.dp),
                     readOnly = true,
                     value = currentCount.toString(),
                     onValueChange = {},
@@ -422,6 +606,11 @@ private fun UpdateCountDialog(
     }
 }
 
+@Composable
+fun MarkComplete(showIncompleteWarningDialog: Boolean) {
+
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun JapaDetailsLoadingScreenPreview() {
@@ -455,11 +644,13 @@ private fun JapaDetailsScreenPreview() {
         lastUpdatedValue = 1,
         lastUpdatedType = UpdateType.INCREMENT,
         lastUpdatedTime = LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"))
     )
     JapaDetailsContent(
         japaInfo = mockJapa,
         isLoading = false,
         snackbarHostState = remember { SnackbarHostState() },
+        onComplete = {},
         onUpdateClick = {},
         onDeleteClick = {},
         onBackClick = {}

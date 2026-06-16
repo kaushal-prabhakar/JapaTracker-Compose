@@ -1,7 +1,5 @@
 package com.kaushal.japacountercompose.domain
 
-import java.time.LocalDateTime
-
 enum class JapaStatus {
     NOT_STARTED, ACTIVE, COMPLETED
 }
@@ -18,5 +16,5 @@ data class JapaInfoEntities(
     val currentCount: Int,
     val lastUpdatedValue: Int,
     val lastUpdatedType: UpdateType,
-    val lastUpdatedTime: LocalDateTime
+    val lastUpdatedTime: String
 )

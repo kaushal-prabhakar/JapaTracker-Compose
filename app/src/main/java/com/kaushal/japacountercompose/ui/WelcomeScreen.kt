@@ -41,7 +41,11 @@ fun WelcomeScreen(navController: NavHostController) {
 
     WelcomeScreenContent(
         onClick = {
-            navController.navigate(JapaAppScreens.japaList.name)
+            navController.navigate(JapaAppScreens.japaList.name) {
+                popUpTo(JapaAppScreens.welcome.name) {
+                    inclusive = true
+                }
+            }
         }
     )
 }

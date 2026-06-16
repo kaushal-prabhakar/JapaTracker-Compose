@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,7 +29,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -62,14 +60,15 @@ import com.kaushal.japacountercompose.domain.JapaInfoEntities
 import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.domain.Outcome
 import com.kaushal.japacountercompose.domain.UpdateType
-import com.kaushal.japacountercompose.ui.JapaAppScreens
 import com.kaushal.japacountercompose.ui.InfoRow
+import com.kaushal.japacountercompose.ui.JapaAppScreens
 import com.kaushal.japacountercompose.ui.StatusBadge
 import com.kaushal.japacountercompose.ui.theme.AlphaBrandColor
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.theme.Completed
 import com.kaushal.japacountercompose.ui.theme.EmptyJapaListText
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -83,9 +82,6 @@ fun JapaListScreen(navController: NavController, viewModel: JapaListViewModel = 
         onAddClick = {
             navController.navigate(JapaAppScreens.addJapa.name)
         },
-        onBackClick = {
-            navController.popBackStack()
-        },
         japaListOutcome = japaListOutcome
     )
 }
@@ -95,7 +91,6 @@ fun JapaListScreen(navController: NavController, viewModel: JapaListViewModel = 
 fun JapaListScreenContent(
     onJapaClick: (Int) -> Unit,
     onAddClick: () -> Unit,
-    onBackClick: () -> Unit,
     japaListOutcome: Outcome<List<JapaInfoEntities>>
 ) {
     Scaffold(
@@ -112,14 +107,6 @@ fun JapaListScreenContent(
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White
                 ),
-                navigationIcon = {
-                    IconButton(onClick = { onBackClick() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
             )
         },
         floatingActionButton = {
@@ -300,7 +287,6 @@ fun JapaListContentPreview() {
     JapaListScreenContent(
         onJapaClick = {},
         onAddClick = {},
-        onBackClick = {},
         japaListOutcome = Outcome.Success(
             listOf(
                 JapaInfoEntities(
@@ -312,6 +298,7 @@ fun JapaListContentPreview() {
                     lastUpdatedValue = 1,
                     lastUpdatedType = UpdateType.INCREMENT,
                     lastUpdatedTime = LocalDateTime.now()
+                        .format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"))
                 )
             )
         )

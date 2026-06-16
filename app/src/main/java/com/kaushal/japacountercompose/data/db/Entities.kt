@@ -7,6 +7,7 @@ import com.kaushal.japacountercompose.domain.JapaInfoEntities
 import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.domain.UpdateType
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Entity(tableName = "Japa_Info")
 data class JapaInfoDBEntity(
@@ -29,6 +30,6 @@ fun JapaInfoDBEntity.toJapaInfoEntities(): JapaInfoEntities {
         currentCount = this.currentCount,
         lastUpdatedValue = this.updatedValue,
         lastUpdatedType = this.updatedType,
-        lastUpdatedTime = this.lastUpdatedTime
+        lastUpdatedTime = this.lastUpdatedTime.format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"))
     )
 }
