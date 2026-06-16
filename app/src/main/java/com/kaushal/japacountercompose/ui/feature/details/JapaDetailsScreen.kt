@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,7 +35,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -67,6 +65,7 @@ import com.kaushal.japacountercompose.domain.JapaInfoEntities
 import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.domain.Outcome
 import com.kaushal.japacountercompose.domain.UpdateType
+import com.kaushal.japacountercompose.ui.AlertDialog
 import com.kaushal.japacountercompose.ui.CustomSmallButton
 import com.kaushal.japacountercompose.ui.IconButton
 import com.kaushal.japacountercompose.ui.OutlinedButton
@@ -88,6 +87,7 @@ fun JapaDetailsScreen(
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var showUpdateDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
     var showIncompleteWarningDialog by remember { mutableStateOf(false) }
 
     val operationFailedMessage = stringResource(id = R.string.operation_failed)
@@ -141,7 +141,7 @@ fun JapaDetailsScreen(
                     }
                 },
                 onUpdateClick = { showUpdateDialog = true },
-                onDeleteClick = { viewModel.deleteJapa() },
+                onDeleteClick = { showDeleteDialog = true },
                 onBackClick = { navController.popBackStack() }
             )
 
@@ -161,24 +161,22 @@ fun JapaDetailsScreen(
                 )
             }
 
+            if (showDeleteDialog) {
+                AlertDialog(
+                    "Delete Japa ?",
+                    "Are you sure, you want to delete this Japa permanently ?",
+                    { viewModel.deleteJapa() },
+                    { showDeleteDialog = false },
+                    { showDeleteDialog = false })
+            }
+
             if (showIncompleteWarningDialog) {
                 AlertDialog(
-                    onDismissRequest = { showIncompleteWarningDialog = false },
-                    title = { Text("Mark as Complete?") },
-                    text = {
-                        Text("Your current count has not reached the target count yet, Complete anyway?")
-                    },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            viewModel.markComplete()
-                            showIncompleteWarningDialog = false
-                        }) { Text("Yes, Complete") }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = {
-                            showIncompleteWarningDialog = false
-                        }) { Text("Cancel") }
-                    }
+                    "Mark as Complete?",
+                    "Your current count has not reached the target count yet, Complete anyway?",
+                    { viewModel.markComplete() },
+                    { showIncompleteWarningDialog = false },
+                    { showIncompleteWarningDialog = false }
                 )
             }
         }
@@ -293,14 +291,16 @@ private fun JapaDetailsContent(
                     .padding(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                IconButton(
-                    onClick = onComplete,
-                    label = stringResource(id = R.string.mark_complete),
-                    enabled = !isLoading,
-                    imageVector = Icons.Default.Done,
-                    contentDescription = "Complete",
-                    modifier = Modifier.weight(1f)
-                )
+                if (japaInfo.status != JapaStatus.COMPLETED) {
+                    IconButton(
+                        onClick = onComplete,
+                        label = stringResource(id = R.string.mark_complete),
+                        enabled = !isLoading,
+                        imageVector = Icons.Default.Done,
+                        contentDescription = "Complete",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
                 OutlinedButton(
                     onClick = onDeleteClick,
                     label = stringResource(id = R.string.delete_japa),

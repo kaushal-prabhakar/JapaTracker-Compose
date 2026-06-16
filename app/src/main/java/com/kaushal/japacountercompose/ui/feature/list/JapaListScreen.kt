@@ -245,7 +245,7 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                     Text(
                         text = "Progress: ${progress.times(100).toInt()}%",
                         fontSize = 12.sp,
-                        color = Color.DarkGray,
+                        color = Color.LightGray,
                         modifier = Modifier.align(Alignment.End)
                     )
                 } else {
