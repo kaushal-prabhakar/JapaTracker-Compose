@@ -18,3 +18,6 @@ val Active = Color(0xFF819DC7)
 val Completed = Color(0xFF81C784)
 
 val EmptyJapaListText = Color.Gray
+
+val SuccessGreen = Color(0xFF2E7D32)
+val ErrorRed = Color(0xFFC62828)

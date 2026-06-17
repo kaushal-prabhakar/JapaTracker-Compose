@@ -13,7 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -73,6 +78,9 @@ import com.kaushal.japacountercompose.ui.icons.ArrowDownIcon
 import com.kaushal.japacountercompose.ui.icons.ArrowUpIcon
 import com.kaushal.japacountercompose.ui.icons.ClockIcon
 import com.kaushal.japacountercompose.ui.theme.AlphaBrandColor
+import com.kaushal.japacountercompose.ui.theme.BrandColor
+import com.kaushal.japacountercompose.ui.theme.ErrorRed
+import com.kaushal.japacountercompose.ui.theme.SuccessGreen
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -432,12 +440,12 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
             text = stringResource(id = R.string.last_session_title),
-            style = MaterialTheme.typography.headlineMedium.copy(
+            style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Monospace,
                 color = BrandColor
@@ -445,75 +453,64 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
             textAlign = TextAlign.Start
         )
 
+        Spacer(modifier = Modifier.height(12.dp))
+
         Card(
-            shape = RoundedCornerShape(4.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp, 12.dp, 0.dp, 0.dp)
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = BrandColor.copy(alpha = 0.05f)
+            ),
+            border = BorderStroke(1.dp, BrandColor.copy(alpha = 0.1f)),
+            modifier = Modifier.fillMaxWidth()
         ) {
             Column(
-                modifier = Modifier
-                    .background(BrandColor.copy(alpha = 0.2f))
-                    .padding(12.dp)
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 4.dp)
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = ClockIcon,
-                        contentDescription = stringResource(id = R.string.last_updated_time_cd),
-                        tint = BrandColor
+                        contentDescription = null,
+                        tint = BrandColor.copy(alpha = 0.6f),
+                        modifier = Modifier.size(20.dp)
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
 
                     Text(
                         text = japaInfo.lastUpdatedTime,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.bodyLarge.copy(
                             fontFamily = FontFamily.Monospace,
-                            color = BrandColor
-                        ),
-                        textAlign = TextAlign.End
+                            color = Color.DarkGray
+                        )
                     )
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp)
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val isIncrement = japaInfo.lastUpdatedType == UpdateType.INCREMENT
+                    val statusColor = if (isIncrement) SuccessGreen else ErrorRed
+                    
+                    Icon(
+                        imageVector = if (isIncrement) ArrowUpIcon else ArrowDownIcon,
+                        contentDescription = null,
+                        tint = statusColor,
+                        modifier = Modifier.size(20.dp)
+                    )
 
-                    var type = stringResource(id = R.string.added_label)
-                    if (japaInfo.lastUpdatedType == UpdateType.INCREMENT) {
-                        Icon(
-                            imageVector = ArrowUpIcon,
-                            contentDescription = stringResource(id = R.string.increment_cd),
-                            tint = BrandColor
-                        )
-                    } else {
-                        Icon(
-                            imageVector = ArrowDownIcon,
-                            contentDescription = stringResource(id = R.string.decrement_cd),
-                            tint = BrandColor
-                        )
-                        type = stringResource(id = R.string.deducted_label)
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
 
                     Text(
-                        text = "$type " + japaInfo.lastUpdatedValue.toString(),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
+                        text = buildAnnotatedString {
+                            append(if (isIncrement) stringResource(id = R.string.added_label) else stringResource(id = R.string.deducted_label))
+                            append(" ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = statusColor)) {
+                                append(japaInfo.lastUpdatedValue.toString())
+                            }
+                        },
+                        style = MaterialTheme.typography.bodyLarge.copy(
                             fontFamily = FontFamily.Monospace,
-                            color = BrandColor
-                        ),
-                        textAlign = TextAlign.End
+                            color = Color.DarkGray
+                        )
                     )
                 }
             }
