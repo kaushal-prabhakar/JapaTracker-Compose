@@ -85,14 +85,14 @@ fun AddNewJapaScreenContent(
         addNewJapaOutcome.collect { result ->
             when (result) {
                 is Outcome.Success -> {
-                    Toast.makeText(context, "Japa Added Successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.japa_added_successfully), Toast.LENGTH_SHORT).show()
                     onSaveSuccess()
                 }
 
                 is Outcome.Failure -> {
                     Toast.makeText(
                         context,
-                        "Error adding Japa.. please try again",
+                        context.getString(R.string.error_adding_japa),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -121,7 +121,7 @@ fun AddNewJapaScreenContent(
                         IconButton(onClick = { onBackClick() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = stringResource(id = R.string.back)
                             )
                         }
                     }
@@ -132,13 +132,13 @@ fun AddNewJapaScreenContent(
                 CustomLargeButton(
                     onClick = {
                         if (nameText.isBlank()) {
-                            Toast.makeText(context, "Japa Name cannot be empty", Toast.LENGTH_SHORT)
+                            Toast.makeText(context, context.getString(R.string.japa_name_empty_error), Toast.LENGTH_SHORT)
                                 .show()
                             return@CustomLargeButton
                         }
                         onSaveClick(nameText.trim(), goalText.toIntOrNull())
                     },
-                    label = "Add",
+                    label = stringResource(id = R.string.add),
                 )
             },
 
@@ -161,7 +161,7 @@ fun AddNewJapaScreenContent(
                             Text("${nameText.length}/30", fontFamily = FontFamily.Monospace)
                         },
                         label = {
-                            Text("Enter Japa Name", fontFamily = FontFamily.Monospace)
+                            Text(stringResource(id = R.string.enter_japa_name), fontFamily = FontFamily.Monospace)
                         })
 
                     OutlinedTextField(
@@ -172,7 +172,7 @@ fun AddNewJapaScreenContent(
                         onValueChange = { goalText = it },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         label = {
-                            Text("Set Goal", fontFamily = FontFamily.Monospace)
+                            Text(stringResource(id = R.string.set_goal), fontFamily = FontFamily.Monospace)
                         })
                 }
             }

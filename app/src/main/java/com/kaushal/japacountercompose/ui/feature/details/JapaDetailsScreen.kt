@@ -163,8 +163,8 @@ fun JapaDetailsScreen(
 
             if (showDeleteDialog) {
                 AlertDialog(
-                    "Delete Japa ?",
-                    "Are you sure, you want to delete this Japa permanently ?",
+                    stringResource(id = R.string.delete_japa_confirm_title),
+                    stringResource(id = R.string.delete_japa_confirm_message),
                     { viewModel.deleteJapa() },
                     { showDeleteDialog = false },
                     { showDeleteDialog = false })
@@ -172,8 +172,8 @@ fun JapaDetailsScreen(
 
             if (showIncompleteWarningDialog) {
                 AlertDialog(
-                    "Mark as Complete?",
-                    "Your current count has not reached the target count yet, Complete anyway?",
+                    stringResource(id = R.string.mark_complete_confirm_title),
+                    stringResource(id = R.string.mark_complete_confirm_message),
                     { viewModel.markComplete() },
                     { showIncompleteWarningDialog = false },
                     { showIncompleteWarningDialog = false }
@@ -278,7 +278,7 @@ private fun JapaDetailsContent(
                     contentColor = Color.White,
                     modifier = Modifier.padding(16.dp),
                 ) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Update")
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(id = R.string.update_content_description))
                 }
             }
         },
@@ -297,7 +297,7 @@ private fun JapaDetailsContent(
                         label = stringResource(id = R.string.mark_complete),
                         enabled = !isLoading,
                         imageVector = Icons.Default.Done,
-                        contentDescription = "Complete",
+                        contentDescription = stringResource(id = R.string.complete_content_description),
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -306,7 +306,7 @@ private fun JapaDetailsContent(
                     label = stringResource(id = R.string.delete_japa),
                     enabled = !isLoading,
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(id = R.string.delete_content_description),
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -409,7 +409,7 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = "Last Session",
+            text = stringResource(id = R.string.last_session_title),
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Monospace,
@@ -437,7 +437,7 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
                 ) {
                     Icon(
                         imageVector = ClockIcon,
-                        contentDescription = "Last updated time",
+                        contentDescription = stringResource(id = R.string.last_updated_time_cd),
                         tint = BrandColor
                     )
 
@@ -461,26 +461,26 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
                         .padding(top = 4.dp)
                 ) {
 
-                    var type = "Added"
+                    var type = stringResource(id = R.string.added_label)
                     if (japaInfo.lastUpdatedType == UpdateType.INCREMENT) {
                         Icon(
                             imageVector = ArrowUpIcon,
-                            contentDescription = UpdateType.INCREMENT.name,
+                            contentDescription = stringResource(id = R.string.increment_cd),
                             tint = BrandColor
                         )
                     } else {
                         Icon(
                             imageVector = ArrowDownIcon,
-                            contentDescription = UpdateType.DECREMENT.name,
+                            contentDescription = stringResource(id = R.string.decrement_cd),
                             tint = BrandColor
                         )
-                        type = "Deducted"
+                        type = stringResource(id = R.string.deducted_label)
                     }
 
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = type + " " + japaInfo.lastUpdatedValue.toString(),
+                        text = "$type " + japaInfo.lastUpdatedValue.toString(),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Monospace,
@@ -529,7 +529,7 @@ private fun UpdateCountDialog(
 
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close Dialog",
+                        contentDescription = stringResource(id = R.string.close_dialog_cd),
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
                             .padding(8.dp)
@@ -604,11 +604,6 @@ private fun UpdateCountDialog(
             }
         }
     }
-}
-
-@Composable
-fun MarkComplete(showIncompleteWarningDialog: Boolean) {
-
 }
 
 @Preview(showBackground = true)

@@ -116,7 +116,7 @@ fun JapaListScreenContent(
                 contentColor = Color.White,
                 modifier = Modifier.padding(16.dp),
             ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Japa")
+                Icon(imageVector = Icons.Filled.Add, contentDescription = stringResource(id = R.string.add_japa))
             }
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -131,7 +131,7 @@ fun JapaListScreenContent(
                 is Outcome.Failure -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            text = "Error loading Japa List: ${japaListOutcome.message}",
+                            text = stringResource(id = R.string.error_loading_japa_list, japaListOutcome.message),
                             color = Color.Red
                         )
                     }
@@ -224,9 +224,9 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 if (japaInfoEntities.target != null) {
-                    InfoRow(label = "Target", value = japaInfoEntities.target.toString())
+                    InfoRow(label = stringResource(id = R.string.target_label), value = japaInfoEntities.target.toString())
                 }
-                InfoRow(label = "Current Count", value = japaInfoEntities.currentCount.toString())
+                InfoRow(label = stringResource(id = R.string.current_count_label), value = japaInfoEntities.currentCount.toString())
                 Spacer(modifier = Modifier.height(8.dp))
 
                 if (progress != null) {
@@ -243,14 +243,14 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
 
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Progress: ${progress.times(100).toInt()}%",
+                        text = stringResource(id = R.string.progress_percentage, progress.times(100).toInt()),
                         fontSize = 12.sp,
                         color = Color.LightGray,
                         modifier = Modifier.align(Alignment.End)
                     )
                 } else {
                     Text(
-                        text = "No specific Target set for this Japa",
+                        text = stringResource(id = R.string.no_target_set),
                         fontSize = 12.sp,
                         color = Color.DarkGray,
                         modifier = Modifier.align(Alignment.End)
