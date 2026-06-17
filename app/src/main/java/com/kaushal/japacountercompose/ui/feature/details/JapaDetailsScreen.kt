@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,13 +23,13 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -67,8 +68,6 @@ import com.kaushal.japacountercompose.domain.Outcome
 import com.kaushal.japacountercompose.domain.UpdateType
 import com.kaushal.japacountercompose.ui.AlertDialog
 import com.kaushal.japacountercompose.ui.CustomSmallButton
-import com.kaushal.japacountercompose.ui.IconButton
-import com.kaushal.japacountercompose.ui.OutlinedButton
 import com.kaushal.japacountercompose.ui.StatusBadge
 import com.kaushal.japacountercompose.ui.icons.ArrowDownIcon
 import com.kaushal.japacountercompose.ui.icons.ArrowUpIcon
@@ -88,6 +87,7 @@ fun JapaDetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var showUpdateDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showResetDialog by remember { mutableStateOf(false) }
     var showIncompleteWarningDialog by remember { mutableStateOf(false) }
 
     val operationFailedMessage = stringResource(id = R.string.operation_failed)
@@ -141,6 +141,7 @@ fun JapaDetailsScreen(
                     }
                 },
                 onUpdateClick = { showUpdateDialog = true },
+                onResetClick = { showResetDialog = true },
                 onDeleteClick = { showDeleteDialog = true },
                 onBackClick = { navController.popBackStack() }
             )
@@ -168,6 +169,19 @@ fun JapaDetailsScreen(
                     { viewModel.deleteJapa() },
                     { showDeleteDialog = false },
                     { showDeleteDialog = false })
+            }
+
+            if (showResetDialog) {
+                AlertDialog(
+                    stringResource(id = R.string.reset_japa_confirm_title),
+                    stringResource(id = R.string.reset_japa_confirm_message),
+                    {
+                        viewModel.resetCounter()
+                        showResetDialog = false
+                    },
+                    { showResetDialog = false },
+                    { showResetDialog = false }
+                )
             }
 
             if (showIncompleteWarningDialog) {
@@ -233,7 +247,10 @@ private fun JapaDetailsErrorScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun JapaDetailsTopBar(onBackClick: () -> Unit) {
+private fun JapaDetailsTopBar(
+    onBackClick: () -> Unit,
+    actions: @Composable RowScope.() -> Unit = {}
+) {
     TopAppBar(
         title = {
             Text(
@@ -244,16 +261,18 @@ private fun JapaDetailsTopBar(onBackClick: () -> Unit) {
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = BrandColor,
             titleContentColor = Color.White,
-            navigationIconContentColor = Color.White
+            navigationIconContentColor = Color.White,
+            actionIconContentColor = Color.White
         ),
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
+            androidx.compose.material3.IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.navigate_back)
                 )
             }
-        }
+        },
+        actions = actions
     )
 }
 
@@ -264,12 +283,33 @@ private fun JapaDetailsContent(
     isLoading: Boolean,
     snackbarHostState: SnackbarHostState,
     onComplete: () -> Unit,
+    onResetClick: () -> Unit,
     onUpdateClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     Scaffold(
-        topBar = { JapaDetailsTopBar(onBackClick = onBackClick) },
+        topBar = {
+            JapaDetailsTopBar(
+                onBackClick = onBackClick,
+                actions = {
+                    if (japaInfo.currentCount > 0 && japaInfo.status != JapaStatus.COMPLETED) {
+                        androidx.compose.material3.IconButton(onClick = onResetClick) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = stringResource(id = R.string.reset_content_description)
+                            )
+                        }
+                    }
+                    androidx.compose.material3.IconButton(onClick = onDeleteClick) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(id = R.string.delete_content_description)
+                        )
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             if (japaInfo.status != JapaStatus.COMPLETED) {
                 FloatingActionButton(
@@ -285,29 +325,16 @@ private fun JapaDetailsContent(
         floatingActionButtonPosition = FabPosition.End,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                if (japaInfo.status != JapaStatus.COMPLETED) {
-                    IconButton(
-                        onClick = onComplete,
-                        label = stringResource(id = R.string.mark_complete),
-                        enabled = !isLoading,
-                        imageVector = Icons.Default.Done,
-                        contentDescription = stringResource(id = R.string.complete_content_description),
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                OutlinedButton(
-                    onClick = onDeleteClick,
-                    label = stringResource(id = R.string.delete_japa),
+            if (japaInfo.status != JapaStatus.COMPLETED) {
+                com.kaushal.japacountercompose.ui.IconButton(
+                    onClick = onComplete,
+                    label = stringResource(id = R.string.mark_complete),
                     enabled = !isLoading,
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(id = R.string.delete_content_description),
-                    modifier = Modifier.weight(1f)
+                    imageVector = Icons.Default.Done,
+                    contentDescription = stringResource(id = R.string.complete_content_description),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 )
             }
         },
@@ -646,6 +673,7 @@ private fun JapaDetailsScreenPreview() {
         isLoading = false,
         snackbarHostState = remember { SnackbarHostState() },
         onComplete = {},
+        onResetClick = {},
         onUpdateClick = {},
         onDeleteClick = {},
         onBackClick = {}

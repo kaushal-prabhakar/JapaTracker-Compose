@@ -147,11 +147,6 @@ fun OutlinedButton(
 }
 
 @Composable
-fun RegularText(text: String, fontSize: TextUnit) {
-    Text(text = text, fontSize = fontSize, fontFamily = FontFamily.Monospace)
-}
-
-@Composable
 fun StatusBadge(status: JapaStatus) {
     val backgroundColor = when (status) {
         JapaStatus.NOT_STARTED -> NotStarted
