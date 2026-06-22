@@ -12,10 +12,12 @@ val Pink40 = Color(0xFF7D5260)
 
 val BrandColor = Color(0xFF452112)
 val AlphaBrandColor = BrandColor.copy(0.5f)
+val ProgressBarBgColor = Color(0xFFC2AEA4)
 
-val NotStarted = Color(0xFFBDBDBD)
-val Active = Color(0xFF819DC7)
-val Completed = Color(0xFF81C784)
+val JapaCardColor = Color(0xFFE3DAD8)
+val NotStarted = Color(0xFFBFAF9F)
+val Active = Color(0xFF7D9AB8)
+val Completed = Color(0xFF7EA376)
 
 val EmptyJapaListText = Color.Gray
 

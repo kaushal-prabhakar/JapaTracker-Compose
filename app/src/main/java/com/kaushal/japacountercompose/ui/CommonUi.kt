@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,20 +16,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.ui.theme.Active
 import com.kaushal.japacountercompose.ui.theme.BrandColor
@@ -148,10 +152,10 @@ fun OutlinedButton(
 
 @Composable
 fun StatusBadge(status: JapaStatus) {
-    val backgroundColor = when (status) {
-        JapaStatus.NOT_STARTED -> NotStarted
-        JapaStatus.ACTIVE -> Active
-        JapaStatus.COMPLETED -> Completed
+    val (backgroundColor, textRes) = when (status) {
+        JapaStatus.NOT_STARTED -> NotStarted to R.string.status_not_started
+        JapaStatus.ACTIVE -> Active to R.string.status_active
+        JapaStatus.COMPLETED -> Completed to R.string.status_completed
     }
 
     Box(
@@ -163,11 +167,11 @@ fun StatusBadge(status: JapaStatus) {
             .padding(horizontal = 12.dp, vertical = 4.dp)
     ) {
         Text(
-            text = status.name.replace("_", " "),
+            text = stringResource(id = textRes),
             fontSize = 12.sp,
             color = Color.White,
-            fontFamily = FontFamily.Monospace,
-            fontWeight = FontWeight.Bold
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -203,11 +207,22 @@ fun AlertDialog(
             Text(description)
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm.invoke() }) { Text("Yes") }
+            TextButton(onClick = { onConfirm.invoke() }) { Text(stringResource(id = R.string.yes)) }
         },
         dismissButton = {
-            TextButton(onClick = { onDismiss.invoke() }) { Text("Cancel") }
+            TextButton(onClick = { onDismiss.invoke() }) { Text(stringResource(id = R.string.cancel)) }
         }
     )
 }
 
+@Composable
+fun LoadingOverlay() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.3f)),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = BrandColor)
+    }
+}

@@ -6,7 +6,7 @@
 
     <!--string messages-->
     <string name="empty_japa_list_message">The first step to inner peace is just a tap away. Add your Japa now</string>
-    <string name="details_screen_target_message">Every chant brings you closer to inner peace — %d is your target.</string>
+    <string name="details_screen_target_message">Every chant brings you closer to inner peace — %s is your target.</string>
     <string name="new_count_value_description">The number of Japas you chanted newly or the number of Japas you want to deduct from the current count.</string>
 
     <!--app bar titles-->
@@ -20,11 +20,11 @@
     <string name="loading">Loading…</string>
     <string name="error_loading_details">Failed to load japa details.</string>
     <string name="enter_count">Enter Count</string>
-    <string name="of_target">of %d</string>
+    <string name="of_target">of %s</string>
     <string name="navigate_back">Navigate back</string>
     <string name="operation_failed">Operation failed. Please try again.</string>
-    <string name="current_count">You have completed %d Japas so far.</string>
-    <string name="last_updated">You chanted %d Japas on %s</string>
+    <string name="current_count">You have completed %s Japas so far.</string>
+    <string name="last_updated">You chanted %s Japas on %s</string>
     <string name="active_status">This is an active on going Japa</string>
     <string name="paused_status">You have suspended this Japa at the moment</string>
     <string name="update_count">Update Count</string>
@@ -68,9 +68,9 @@
     <string name="no_target_set">No specific Target set for this Japa</string>
 
     <!-- Status Labels -->
-    <string name="status_not_started">NOT STARTED</string>
-    <string name="status_active">ACTIVE</string>
-    <string name="status_completed">COMPLETED</string>
+    <string name="status_not_started">Not Started</string>
+    <string name="status_active">In progress</string>
+    <string name="status_completed">Completed</string>
 
     <!-- Accessibility/Content Descriptions -->
     <string name="update_content_description">Update</string>
@@ -78,5 +78,9 @@
     <string name="delete_content_description">Delete</string>
     <string name="reset_content_description">Reset</string>
     <string name="back">Back</string>
+
+    <!-- Celebration Strings -->
+    <string name="celebration_congratulations">Congratulations!</string>
+    <string name="celebration_goal_reached">You\'ve reached your goal.</string>
 
 </resources>

@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaushal.japacountercompose.domain.JapaInfoEntities
+import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.domain.MainRepository
 import com.kaushal.japacountercompose.domain.Outcome
 import com.kaushal.japacountercompose.domain.UpdateType
@@ -24,6 +25,7 @@ import javax.inject.Inject
 sealed interface JapaDetailsAction {
     data object UpdateSuccess : JapaDetailsAction
     data object DeleteSuccess : JapaDetailsAction
+    data object CompletionSuccess : JapaDetailsAction
     data class Failure(val message: String) : JapaDetailsAction
 }
 
@@ -55,15 +57,25 @@ class JapaDetailsViewModel @Inject constructor(
 
     /** Adds the given value to the current count. */
     fun incrementCount(value: Int) {
-        val current = currentCount() ?: return
-        launchAction(JapaDetailsAction.UpdateSuccess) {
-            repository.updateCount(japaId, current + value, value, UpdateType.INCREMENT)
+        val detail = (japaDetailOutcome.value as? Outcome.Success)?.data ?: return
+        val current = detail.currentCount
+        val target = detail.target
+        val newCount = current + value
+
+        val isAutoCompleting = target != null && newCount >= target && detail.status != JapaStatus.COMPLETED
+        val successEvent = if (isAutoCompleting) JapaDetailsAction.CompletionSuccess else JapaDetailsAction.UpdateSuccess
+
+        launchAction(successEvent) {
+            repository.updateCount(japaId, newCount, value, UpdateType.INCREMENT)
+            if (isAutoCompleting) {
+                repository.markComplete(japaId)
+            }
         }
     }
 
     /** Subtracts the given value from the current count, floored at zero. */
     fun decrementCount(value: Int) {
-        val current = currentCount() ?: return
+        val current = (japaDetailOutcome.value as? Outcome.Success)?.data?.currentCount ?: return
         val newCount = (current - value).coerceAtLeast(0)
         launchAction(JapaDetailsAction.UpdateSuccess) {
             repository.updateCount(japaId, newCount, value, UpdateType.DECREMENT)
@@ -71,7 +83,7 @@ class JapaDetailsViewModel @Inject constructor(
     }
 
     /** Marks this japa as completed. */
-    fun markComplete() = launchAction(JapaDetailsAction.UpdateSuccess) {
+    fun markComplete() = launchAction(JapaDetailsAction.CompletionSuccess) {
         repository.markComplete(japaId)
     }
 
@@ -84,9 +96,6 @@ class JapaDetailsViewModel @Inject constructor(
     fun deleteJapa() = launchAction(JapaDetailsAction.DeleteSuccess) {
         repository.deleteJapa(japaId)
     }
-
-    private fun currentCount(): Int? =
-        (japaDetailOutcome.value as? Outcome.Success)?.data?.currentCount
 
     private fun launchAction(successEvent: JapaDetailsAction, block: suspend () -> Unit) {
         viewModelScope.launch {
