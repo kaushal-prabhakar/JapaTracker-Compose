@@ -17,7 +17,7 @@ val ProgressBarBgColor = Color(0xFFC2AEA4)
 val JapaCardColor = Color(0xFFE3DAD8)
 val NotStarted = Color(0xFFBFAF9F)
 val Active = Color(0xFF7D9AB8)
-val Completed = Color(0xFF7EA376)
+val Completed = Color(0xFF8AA57E)
 
 val EmptyJapaListText = Color.Gray
 

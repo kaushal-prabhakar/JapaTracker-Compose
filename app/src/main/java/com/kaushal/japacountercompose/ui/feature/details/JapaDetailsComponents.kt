@@ -248,6 +248,8 @@ fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
         label = "ProgressAnimation"
     )
 
+    val hasTargetCount = japaInfo.target != null
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -264,17 +266,17 @@ fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawCircle(
                     color = BrandColor.copy(alpha = 0.2f),
-                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
+                    style = Stroke(width = 14.dp.toPx(), cap = StrokeCap.Round)
                 )
             }
 
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawArc(
-                    color = if (isCompleted) SuccessGreen else BrandColor,
+                    color = BrandColor,
                     startAngle = -90f,
                     sweepAngle = 360 * animatedProgress,
                     useCenter = false,
-                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
+                    style = Stroke(width = 14.dp.toPx(), cap = StrokeCap.Round)
                 )
             }
 
@@ -283,11 +285,11 @@ fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
                     text = japaInfo.currentCount.formatWithCommas(),
                     style = MaterialTheme.typography.displayMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = if (isCompleted) SuccessGreen else BrandColor,
+                        color = BrandColor,
                         fontFamily = FontFamily.Monospace
                     )
                 )
-                if (japaInfo.target != null) {
+                if (hasTargetCount) {
                     Text(
                         text = stringResource(id = R.string.of_target, japaInfo.target.formatWithCommas()),
                         style = MaterialTheme.typography.bodyMedium.copy(
@@ -299,7 +301,20 @@ fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        if(hasTargetCount) {
+            val remainingCount = japaInfo.target - japaInfo.currentCount
+            Text(
+                text = "$remainingCount remaining",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
+                    color = BrandColor
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = japaInfo.name.toTitleCase(),
@@ -327,7 +342,7 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
     ) {
         Text(
             text = stringResource(id = R.string.last_session_title),
-            style = MaterialTheme.typography.titleLarge.copy(
+            style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Monospace,
                 color = BrandColor
@@ -388,6 +403,7 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
                             withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = statusColor)) {
                                 append(japaInfo.lastUpdatedValue.formatWithCommas())
                             }
+                            append(" chants ")
                         },
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontFamily = FontFamily.Monospace,

@@ -240,7 +240,7 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                         .clip(RoundedCornerShape(8.dp)),
                     gapSize = 0.dp,
                     drawStopIndicator = {},
-                    color = Completed,
+                    color = BrandColor,
                     trackColor = ProgressBarBgColor,
                     strokeCap = StrokeCap.Butt
                 )
