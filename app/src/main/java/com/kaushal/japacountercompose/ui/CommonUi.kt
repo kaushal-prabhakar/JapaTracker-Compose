@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.domain.JapaStatus
+import com.kaushal.japacountercompose.domain.JapaStatusUiInfo
 import com.kaushal.japacountercompose.ui.theme.Active
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.theme.Completed
@@ -152,26 +153,40 @@ fun OutlinedButton(
 
 @Composable
 fun StatusBadge(status: JapaStatus) {
-    val (backgroundColor, textRes) = when (status) {
-        JapaStatus.NOT_STARTED -> NotStarted to R.string.status_not_started
-        JapaStatus.ACTIVE -> Active to R.string.status_active
-        JapaStatus.COMPLETED -> Completed to R.string.status_completed
-    }
+    val statusInfo = getJapaStatusUiInfo(status)
 
     Box(
         modifier = Modifier
             .background(
-                color = backgroundColor,
+                color = statusInfo.color,
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(horizontal = 12.dp, vertical = 4.dp)
     ) {
         Text(
-            text = stringResource(id = textRes),
+            text = statusInfo.statusName,
             fontSize = 12.sp,
             color = Color.White,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
+fun getJapaStatusUiInfo(status: JapaStatus): JapaStatusUiInfo {
+    return when (status) {
+        JapaStatus.NOT_STARTED -> JapaStatusUiInfo(
+            color = NotStarted,
+            statusName = stringResource(id = R.string.status_not_started)
+        )
+        JapaStatus.ACTIVE -> JapaStatusUiInfo(
+            color = Active,
+            statusName = stringResource(id = R.string.status_active)
+        )
+        JapaStatus.COMPLETED -> JapaStatusUiInfo(
+            color = Completed,
+            statusName = stringResource(id = R.string.status_completed)
         )
     }
 }

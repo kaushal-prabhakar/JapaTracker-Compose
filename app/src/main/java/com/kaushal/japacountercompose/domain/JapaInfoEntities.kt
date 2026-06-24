@@ -1,5 +1,7 @@
 package com.kaushal.japacountercompose.domain
 
+import androidx.compose.ui.graphics.Color
+
 enum class JapaStatus {
     NOT_STARTED, ACTIVE, COMPLETED
 }
@@ -17,4 +19,9 @@ data class JapaInfoEntities(
     val lastUpdatedValue: Int,
     val lastUpdatedType: UpdateType,
     val lastUpdatedTime: String
+)
+
+data class JapaStatusUiInfo(
+    val color: Color,
+    val statusName: String
 )

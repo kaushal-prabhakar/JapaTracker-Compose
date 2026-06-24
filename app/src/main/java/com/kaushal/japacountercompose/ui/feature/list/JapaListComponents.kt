@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -50,14 +51,13 @@ import androidx.compose.ui.unit.sp
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.domain.JapaInfoEntities
 import com.kaushal.japacountercompose.domain.Outcome
-import com.kaushal.japacountercompose.ui.StatusBadge
 import com.kaushal.japacountercompose.ui.formatWithCommas
-import com.kaushal.japacountercompose.ui.toTitleCase
-import com.kaushal.japacountercompose.ui.theme.AlphaBrandColor
+import com.kaushal.japacountercompose.ui.getJapaStatusUiInfo
+import com.kaushal.japacountercompose.ui.icons.DotCircle
 import com.kaushal.japacountercompose.ui.theme.BrandColor
-import com.kaushal.japacountercompose.ui.theme.Completed
 import com.kaushal.japacountercompose.ui.theme.JapaCardColor
 import com.kaushal.japacountercompose.ui.theme.ProgressBarBgColor
+import com.kaushal.japacountercompose.ui.toTitleCase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +93,7 @@ fun JapaListScreenContent(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.add_japa)
+                    contentDescription = stringResource(id = R.string.add)
                 )
             }
         },
@@ -192,15 +192,6 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                         color = BrandColor
                     ),
                 )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    StatusBadge(status = japaInfoEntities.status)
-                }
             }
 
             if (japaInfoEntities.target != null) {
@@ -215,7 +206,7 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                     ),
                 )
 
-                if(japaInfoEntities.currentCount > 0) {
+                if (japaInfoEntities.currentCount > 0) {
                     val remainingCount = japaInfoEntities.target - japaInfoEntities.currentCount
                     Text(
                         modifier = Modifier
@@ -246,13 +237,43 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "${progress.times(100).toInt()}% complete",
-                    fontSize = 15.sp,
-                    color = Color.DarkGray,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = FontFamily.SansSerif
-                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${progress.times(100).toInt()}% complete",
+                        fontSize = 15.sp,
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = FontFamily.SansSerif
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val statusInfo = getJapaStatusUiInfo(japaInfoEntities.status)
+                        Icon(
+                            imageVector = DotCircle,
+                            contentDescription = null,
+                            tint = statusInfo.color,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        Text(
+                            text = statusInfo.statusName,
+                            fontSize = 15.sp,
+                            color = Color.DarkGray,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = FontFamily.SansSerif
+                        )
+                    }
+                }
             }
         }
     }
