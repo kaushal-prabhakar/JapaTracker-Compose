@@ -14,13 +14,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.domain.Outcome
-import com.kaushal.japacountercompose.ui.CustomLargeButton
 import com.kaushal.japacountercompose.ui.LoadingOverlay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -71,26 +69,15 @@ fun AddNewJapaScreenContent(
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             topBar = { AddNewJapaTopBar(onBackClick = onBackClick) },
-            bottomBar = {
-                CustomLargeButton(
-                    onClick = {
-                        if (nameText.isBlank()) {
-                            Toast.makeText(context, context.getString(R.string.japa_name_empty_error), Toast.LENGTH_SHORT).show()
-                            return@CustomLargeButton
-                        }
-                        onSaveClick(nameText.trim(), goalText.toIntOrNull())
-                    },
-                    label = stringResource(id = R.string.add),
-                    enabled = !isLoading
-                )
-            }
         ) { padding ->
             Box(modifier = Modifier.padding(padding)) {
                 AddNewJapaForm(
+                    isLoading = isLoading,
                     nameText = nameText,
                     onNameChange = { nameText = it },
                     goalText = goalText,
-                    onGoalChange = { goalText = it }
+                    onGoalChange = { goalText = it },
+                    onAddClick = { onSaveClick(nameText, goalText.toIntOrNull()) }
                 )
             }
         }
