@@ -29,10 +29,19 @@ fun AddNewJapaScreen(
     newJapaViewModel: AddNewJapaViewModel = hiltViewModel()
 ) {
     val isLoading by newJapaViewModel.isLoading.collectAsState()
+    val context = LocalContext.current
 
     AddNewJapaScreenContent(
         onBackClick = { navController.popBackStack() },
-        onSaveClick = { name, target -> newJapaViewModel.addNewJapa(name, target) },
+        onSaveClick = { name, target ->
+            if (name.isNotEmpty()) {
+                newJapaViewModel.addNewJapa(name, target)
+            } else Toast.makeText(
+                context,
+                context.getString(R.string.japa_name_empty_error),
+                Toast.LENGTH_SHORT
+            ).show()
+        },
         isLoading = isLoading,
         addNewJapaOutcome = newJapaViewModel.addNewJapaOutcome,
         onSaveSuccess = { navController.popBackStack() }
@@ -55,12 +64,22 @@ fun AddNewJapaScreenContent(
         addNewJapaOutcome.collect { result ->
             when (result) {
                 is Outcome.Success -> {
-                    Toast.makeText(context, context.getString(R.string.japa_added_successfully), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.japa_added_successfully),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     onSaveSuccess()
                 }
+
                 is Outcome.Failure -> {
-                    Toast.makeText(context, context.getString(R.string.error_adding_japa), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.error_adding_japa),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+
                 is Outcome.Loading -> {}
             }
         }
