@@ -14,6 +14,8 @@ val BrandColor = Color(0xFF452112)
 val AlphaBrandColor = BrandColor.copy(0.5f)
 val ProgressBarBgColor = Color(0xFFC2AEA4)
 
+val LightTextColor = Color(0xFF6B4F44)
+
 val JapaCardColor = Color(0xFFE3DAD8)
 val NotStarted = Color(0xFFBFAF9F)
 val Active = Color(0xFF7D9AB8)

@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -50,12 +51,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.domain.JapaInfoEntities
+import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.domain.Outcome
 import com.kaushal.japacountercompose.ui.formatWithCommas
 import com.kaushal.japacountercompose.ui.getJapaStatusUiInfo
 import com.kaushal.japacountercompose.ui.icons.DotCircle
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.theme.JapaCardColor
+import com.kaushal.japacountercompose.ui.theme.LightTextColor
 import com.kaushal.japacountercompose.ui.theme.ProgressBarBgColor
 import com.kaushal.japacountercompose.ui.toTitleCase
 
@@ -211,11 +214,11 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                     Text(
                         modifier = Modifier
                             .padding(top = 4.dp),
-                        text = "$remainingCount remaining",
+                        text = "${remainingCount.formatWithCommas()} remaining",
                         style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.Medium,
                             fontFamily = FontFamily.SansSerif,
-                            color = BrandColor
+                            color = LightTextColor
                         ),
                     )
                 }
@@ -245,8 +248,8 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                     Text(
                         text = "${progress.times(100).toInt()}% complete",
                         fontSize = 15.sp,
-                        color = Color.DarkGray,
-                        fontWeight = FontWeight.SemiBold,
+                        color = BrandColor,
+                        fontWeight = FontWeight.Medium,
                         fontFamily = FontFamily.SansSerif
                     )
 
@@ -256,12 +259,25 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val statusInfo = getJapaStatusUiInfo(japaInfoEntities.status)
-                        Icon(
-                            imageVector = DotCircle,
-                            contentDescription = null,
-                            tint = statusInfo.color,
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                        )
+                        if (japaInfoEntities.status == JapaStatus.COMPLETED) {
+                            Icon(
+                                imageVector = Icons.Default.Done,
+                                contentDescription = null,
+                                tint = statusInfo.color,
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .align(Alignment.CenterVertically),
+                            )
+                        } else {
+                            Icon(
+                                imageVector = DotCircle,
+                                contentDescription = null,
+                                tint = statusInfo.color,
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .align(Alignment.CenterVertically),
+                            )
+                        }
 
                         Spacer(modifier = Modifier.width(4.dp))
 
