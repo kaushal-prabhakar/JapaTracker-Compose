@@ -38,7 +38,6 @@ import com.kaushal.japacountercompose.ui.CustomLargeButton
 import com.kaushal.japacountercompose.ui.theme.AlphaBrandColor
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.theme.JapaCardColor
-import com.kaushal.japacountercompose.ui.toTitleCase
 
 private const val JAPA_NAME_MAX_LENGTH = 30L
 

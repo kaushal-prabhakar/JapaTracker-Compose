@@ -7,7 +7,7 @@
     <!--string messages-->
     <string name="empty_japa_list_message">The first step to inner peace is just a tap away. Add your Japa now</string>
     <string name="details_screen_target_message">Every chant brings you closer to inner peace — %s is your target.</string>
-    <string name="new_count_value_description">The number of Japas you chanted newly or the number of Japas you want to deduct from the current count.</string>
+    <string name="new_count_value_description">Enter the count to add or deduct.</string>
 
     <!--app bar titles-->
     <string name="japa_list">Japa List</string>
@@ -24,7 +24,7 @@
     <string name="of_target">of %s</string>
     <string name="navigate_back">Navigate back</string>
     <string name="operation_failed">Operation failed. Please try again.</string>
-    <string name="current_count">You have completed %s Japas so far.</string>
+    <string name="current_count">Current Count</string>
     <string name="last_updated">You chanted %s Japas on %s</string>
     <string name="active_status">This is an active on going Japa</string>
     <string name="paused_status">You have suspended this Japa at the moment</string>
@@ -48,10 +48,11 @@
     <!-- Details Screen -->
     <string name="last_session_title">Last Session</string>
     <string name="last_updated_time_cd">Last updated time</string>
-    <string name="added_label">Added</string>
-    <string name="deducted_label">Deducted</string>
+    <string name="added_count_label">Added %s Chants</string>
+    <string name="deducted_count_label">Deducted %s Chants</string>
     <string name="increment_cd">Increment</string>
     <string name="decrement_cd">Decrement</string>
+    <string name="added_label">Added Japa</string>
 
     <!-- Add Japa Strings -->
     <string name="japa_added_successfully">Japa Added Successfully</string>

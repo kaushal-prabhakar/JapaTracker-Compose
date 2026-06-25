@@ -32,7 +32,7 @@ fun JapaDetailsScreen(
     val outcome by viewModel.japaDetailOutcome.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    var showUpdateDialog by remember { mutableStateOf(false) }
+    var showUpdateBottomsheet by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
     var showIncompleteWarningDialog by remember { mutableStateOf(false) }
@@ -94,24 +94,25 @@ fun JapaDetailsScreen(
                         viewModel.markComplete()
                     }
                 },
-                onUpdateClick = { showUpdateDialog = true },
+                onUpdateClick = { showUpdateBottomsheet = true },
                 onResetClick = { showResetDialog = true },
                 onDeleteClick = { showDeleteDialog = true },
                 onBackClick = { navController.popBackStack() }
             )
 
-            if (showUpdateDialog) {
-                UpdateCountDialog(
+            if (showUpdateBottomsheet) {
+                UpdateCountBottomSheet(
+                    targetCount = state.data.target ?: 0,
                     currentCount = state.data.currentCount,
                     isLoading = isLoading,
-                    onDismiss = { showUpdateDialog = false },
-                    onAdd = { value ->
-                        viewModel.incrementCount(value)
-                        showUpdateDialog = false
-                    },
-                    onDeduct = { value ->
-                        viewModel.decrementCount(value)
-                        showUpdateDialog = false
+                    onDismiss = { showUpdateBottomsheet = false },
+                    onSave = { value, isDeduct ->
+                        if (isDeduct) {
+                            viewModel.decrementCount(value)
+                        } else {
+                            viewModel.incrementCount(value)
+                        }
+                        showUpdateBottomsheet = false
                     }
                 )
             }
@@ -120,7 +121,10 @@ fun JapaDetailsScreen(
                 AlertDialog(
                     stringResource(id = R.string.delete_japa_confirm_title),
                     stringResource(id = R.string.delete_japa_confirm_message),
-                    { viewModel.deleteJapa() },
+                    {
+                        viewModel.deleteJapa()
+                        showDeleteDialog = false
+                    },
                     { showDeleteDialog = false },
                     { showDeleteDialog = false })
             }
@@ -164,14 +168,15 @@ private fun JapaDetailsLoadingScreenPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun UpdateCountDialogPreview() {
-    UpdateCountDialog(
-        currentCount = 54,
-        isLoading = false,
-        onDismiss = {},
-        onAdd = {},
-        onDeduct = {}
-    )
+private fun UpdateCountBottomSheetPreview() {
+    androidx.compose.material3.MaterialTheme {
+        UpdateCountBottomSheetContent(
+            targetCount = 0,
+            currentCount = 54,
+            isLoading = false,
+            onSave = { _, _ -> }
+        )
+    }
 }
 
 @Preview(showBackground = true)

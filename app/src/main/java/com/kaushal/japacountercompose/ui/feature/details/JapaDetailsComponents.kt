@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +21,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,10 +34,15 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -55,30 +59,32 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.kaushal.japacountercompose.R
 import com.kaushal.japacountercompose.domain.JapaInfoEntities
 import com.kaushal.japacountercompose.domain.JapaStatus
 import com.kaushal.japacountercompose.domain.UpdateType
-import com.kaushal.japacountercompose.ui.CustomSmallButton
-import com.kaushal.japacountercompose.ui.formatWithCommas
-import com.kaushal.japacountercompose.ui.toTitleCase
+import com.kaushal.japacountercompose.ui.CustomLargeButton
 import com.kaushal.japacountercompose.ui.IconButton
 import com.kaushal.japacountercompose.ui.StatusBadge
+import com.kaushal.japacountercompose.ui.formatWithCommas
 import com.kaushal.japacountercompose.ui.icons.ArrowDownIcon
 import com.kaushal.japacountercompose.ui.icons.ArrowUpIcon
 import com.kaushal.japacountercompose.ui.icons.ClockIcon
 import com.kaushal.japacountercompose.ui.theme.AlphaBrandColor
 import com.kaushal.japacountercompose.ui.theme.BrandColor
+import com.kaushal.japacountercompose.ui.theme.Completed
 import com.kaushal.japacountercompose.ui.theme.ErrorRed
+import com.kaushal.japacountercompose.ui.theme.JapaCardColor
 import com.kaushal.japacountercompose.ui.theme.SuccessGreen
+import com.kaushal.japacountercompose.ui.toTitleCase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -201,7 +207,10 @@ fun JapaDetailsContent(
                     contentColor = Color.White,
                     modifier = Modifier.padding(16.dp),
                 ) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(id = R.string.update_content_description))
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(id = R.string.update_content_description)
+                    )
                 }
             }
         },
@@ -237,7 +246,6 @@ fun JapaDetailsContent(
 
 @Composable
 fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
-    val isCompleted = japaInfo.status == JapaStatus.COMPLETED
     val progress = japaInfo.target?.let {
         if (it > 0) japaInfo.currentCount.toFloat() / it.toFloat() else 0f
     } ?: 0f
@@ -291,7 +299,10 @@ fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
                 )
                 if (hasTargetCount) {
                     Text(
-                        text = stringResource(id = R.string.of_target, japaInfo.target.formatWithCommas()),
+                        text = stringResource(
+                            id = R.string.of_target,
+                            japaInfo.target.formatWithCommas()
+                        ),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = BrandColor.copy(alpha = 0.6f),
                             fontFamily = FontFamily.Monospace
@@ -301,10 +312,10 @@ fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
             }
         }
 
-        if(hasTargetCount) {
+        if (hasTargetCount) {
             val remainingCount = japaInfo.target - japaInfo.currentCount
             Text(
-                text = "$remainingCount remaining",
+                text = "${remainingCount.formatWithCommas()} remaining",
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Monospace,
@@ -386,7 +397,7 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     val isIncrement = japaInfo.lastUpdatedType == UpdateType.INCREMENT
                     val statusColor = if (isIncrement) SuccessGreen else ErrorRed
-                    
+
                     Icon(
                         imageVector = if (isIncrement) ArrowUpIcon else ArrowDownIcon,
                         contentDescription = null,
@@ -396,15 +407,41 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
 
                     Spacer(modifier = Modifier.width(12.dp))
 
+                    val count = japaInfo.lastUpdatedValue.formatWithCommas()
+                    val labelText = if (japaInfo.status == JapaStatus.NOT_STARTED) {
+                        stringResource(id = R.string.added_label)
+                    } else {
+                        if (isIncrement) stringResource(
+                            id = R.string.added_count_label,
+                            count
+                        )
+                        else stringResource(
+                            id = R.string.deducted_count_label,
+                            count
+                        )
+                    }
+
                     Text(
-                        text = buildAnnotatedString {
-                            append(if (isIncrement) stringResource(id = R.string.added_label) else stringResource(id = R.string.deducted_label))
-                            append(" ")
-                            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = statusColor)) {
-                                append(japaInfo.lastUpdatedValue.formatWithCommas())
-                            }
-                            append(" chants ")
-                        },
+                        text =
+                            if (labelText.contains(count)) {
+                                buildAnnotatedString {
+                                    val start = labelText.indexOf(count)
+                                    val end = start + count.length
+
+                                    append(labelText)
+
+                                    addStyle(
+                                        style = SpanStyle(
+                                            color = if (isIncrement) Completed else Color.Red,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        start = start,
+                                        end = end
+                                    )
+                                }
+                            } else {
+                                buildAnnotatedString { append(labelText) }
+                            },
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontFamily = FontFamily.Monospace,
                             color = Color.DarkGray
@@ -416,114 +453,160 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateCountDialog(
+fun UpdateCountBottomSheet(
+    targetCount: Int,
     currentCount: Int,
     isLoading: Boolean,
     onDismiss: () -> Unit,
-    onAdd: (Int) -> Unit,
-    onDeduct: (Int) -> Unit
+    onSave: (Int, Boolean) -> Unit
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        dragHandle = { BottomSheetDefaults.DragHandle() }
+    ) {
+        UpdateCountBottomSheetContent(
+            targetCount,
+            currentCount = currentCount,
+            isLoading = isLoading,
+            onSave = onSave
+        )
+    }
+}
+
+@Composable
+fun UpdateCountBottomSheetContent(
+    targetCount: Int,
+    currentCount: Int,
+    isLoading: Boolean,
+    onSave: (Int, Boolean) -> Unit
 ) {
     var inputValue by remember { mutableStateOf("") }
+    var isDeduct by remember { mutableStateOf(false) }
     val parsedValue = inputValue.toIntOrNull() ?: 0
 
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.padding(10.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, bottom = 48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(id = R.string.update_count),
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace,
+                color = BrandColor
+            ),
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = stringResource(id = R.string.current_count),
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace,
+                color = BrandColor
+            ),
+            modifier = Modifier.padding(bottom = 6.dp)
+                .align(Alignment.Start)
+        )
+
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(4.dp),
+            color = BrandColor.copy(alpha = 0.08f)
         ) {
-            Column {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.update_count),
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(8.dp),
-                        textAlign = TextAlign.Center,
-                        color = Color.Black,
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily.Monospace
-                    )
-
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(id = R.string.close_dialog_cd),
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(8.dp)
-                            .clickable { onDismiss() }
-                    )
-                }
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp, 8.dp),
-                    readOnly = true,
-                    value = currentCount.formatWithCommas(),
-                    onValueChange = {},
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.current_count, currentCount.formatWithCommas()),
-                            fontFamily = FontFamily.Monospace
+            Text(
+                text = buildAnnotatedString {
+                    append(currentCount.formatWithCommas())
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = BrandColor.copy(alpha = 0.6f)
                         )
+                    ) {
+                        append(" / ${targetCount.formatWithCommas()}")
                     }
-                )
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp, 2.dp),
-                    value = inputValue,
-                    onValueChange = { inputValue = it.filter { ch -> ch.isDigit() } },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.enter_count),
-                            fontFamily = FontFamily.Monospace
-                        )
-                    }
-                )
-
-                Text(
-                    text = stringResource(id = R.string.new_count_value_description),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    textAlign = TextAlign.Start,
-                    color = Color.Black,
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily.Monospace
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    CustomSmallButton(
-                        onClick = { if (parsedValue > 0) onAdd(parsedValue) },
-                        label = stringResource(id = R.string.add),
-                        enabled = parsedValue > 0 && !isLoading,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp)
-                    )
-
-                    CustomSmallButton(
-                        onClick = { if (parsedValue > 0) onDeduct(parsedValue) },
-                        label = stringResource(id = R.string.deduct),
-                        enabled = parsedValue > 0 && !isLoading,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp)
-                    )
-                }
-            }
+                },
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(16.dp)
+            )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = inputValue,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = AlphaBrandColor,
+                focusedSupportingTextColor = AlphaBrandColor
+            ),
+            onValueChange = { inputValue = it.filter { ch -> ch.isDigit() } },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            label = {
+                Text(
+                    text = stringResource(id = R.string.enter_count),
+                    fontFamily = FontFamily.Monospace,
+                    color = BrandColor
+                )
+            }
+        )
+
+        Text(
+            text = stringResource(id = R.string.new_count_value_description),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = 16.dp),
+            textAlign = TextAlign.Start,
+            color = Color.Black,
+            fontSize = 14.sp,
+            fontFamily = FontFamily.Monospace
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = if (isDeduct) stringResource(id = R.string.deduct) else stringResource(id = R.string.add_japa),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold,
+                    color = BrandColor
+                )
+            )
+            Switch(
+                checked = isDeduct,
+                onCheckedChange = { isDeduct = it },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = ErrorRed,
+                    checkedTrackColor = ErrorRed.copy(alpha = 0.3f),
+                    uncheckedThumbColor = Completed,
+                    uncheckedTrackColor = Completed.copy(alpha = 0.3f)
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        CustomLargeButton(
+            onClick = { if (parsedValue > 0) onSave(parsedValue, isDeduct) },
+            label = stringResource(id = R.string.update_count),
+            enabled = parsedValue > 0 && !isLoading
+        )
     }
 }

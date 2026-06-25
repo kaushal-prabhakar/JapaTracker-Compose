@@ -96,7 +96,7 @@ fun JapaListScreenContent(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.add)
+                    contentDescription = stringResource(id = R.string.add_japa)
                 )
             }
         },
