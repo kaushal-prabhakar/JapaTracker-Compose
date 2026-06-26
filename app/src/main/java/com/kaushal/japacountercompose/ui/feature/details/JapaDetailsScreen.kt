@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +30,7 @@ fun JapaDetailsScreen(
     navController: NavController,
     viewModel: JapaDetailsViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val outcome by viewModel.japaDetailOutcome.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -37,6 +39,7 @@ fun JapaDetailsScreen(
     var showResetDialog by remember { mutableStateOf(false) }
     var showIncompleteWarningDialog by remember { mutableStateOf(false) }
     var showCelebration by remember { mutableStateOf(false) }
+    var warningMessageForComplete by remember { mutableStateOf("") }
 
     val operationFailedMessage = stringResource(id = R.string.operation_failed)
 
@@ -85,13 +88,14 @@ fun JapaDetailsScreen(
                     if (state.data.target != null) {
                         if (state.data.currentCount < state.data.target) {
                             showIncompleteWarningDialog = true
+                            warningMessageForComplete = context.getString(R.string.mark_complete_before_target_confirm_message)
                         } else {
                             showIncompleteWarningDialog = false
                             viewModel.markComplete()
                         }
                     } else {
-                        showIncompleteWarningDialog = false
-                        viewModel.markComplete()
+                        showIncompleteWarningDialog = true
+                        warningMessageForComplete = context.getString(R.string.mark_complete_confirm_message)
                     }
                 },
                 onUpdateClick = { showUpdateBottomsheet = true },
@@ -120,7 +124,7 @@ fun JapaDetailsScreen(
             if (showDeleteDialog) {
                 AlertDialog(
                     stringResource(id = R.string.delete_japa_confirm_title),
-                    stringResource(id = R.string.delete_japa_confirm_message),
+                    warningMessageForComplete,
                     {
                         viewModel.deleteJapa()
                         showDeleteDialog = false

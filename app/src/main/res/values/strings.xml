@@ -38,7 +38,8 @@
     <string name="delete_japa_confirm_title">Delete Japa ?</string>
     <string name="delete_japa_confirm_message">Are you sure, you want to delete this Japa permanently ?</string>
     <string name="mark_complete_confirm_title">Mark as Complete?</string>
-    <string name="mark_complete_confirm_message">Your current count has not reached the target count yet, Complete anyway?</string>
+    <string name="mark_complete_before_target_confirm_message">Your current count has not reached the target count yet, Complete anyway?</string>
+    <string name="mark_complete_confirm_message">Do you really want to mark this Japa as complete?</string>
     <string name="reset_japa_confirm_title">Reset Japa ?</string>
     <string name="reset_japa_confirm_message">Are you sure, you want to reset the counter to zero? This will also clear your last session details.</string>
     <string name="yes">Yes</string>
