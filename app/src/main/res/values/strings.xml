@@ -32,7 +32,7 @@
     <string name="mark_complete">Mark as Complete</string>
     <string name="reset_counter">Reset</string>
     <string name="add">Add Japa</string>
-    <string name="deduct">Deduct</string>
+    <string name="deduct">Deduct Japa</string>
 
     <!-- Dialog Strings -->
     <string name="delete_japa_confirm_title">Delete Japa ?</string>
