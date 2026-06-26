@@ -27,6 +27,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +57,7 @@ import com.kaushal.japacountercompose.domain.Outcome
 import com.kaushal.japacountercompose.ui.formatWithCommas
 import com.kaushal.japacountercompose.ui.getJapaStatusUiInfo
 import com.kaushal.japacountercompose.ui.icons.DotCircle
+import com.kaushal.japacountercompose.ui.icons.Infinite
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.theme.JapaCardColor
 import com.kaushal.japacountercompose.ui.theme.LightTextColor
@@ -222,6 +224,50 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                         ),
                     )
                 }
+            } else {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 8.dp),
+                    text = japaInfoEntities.currentCount.formatWithCommas() + " Chants",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = FontFamily.SansSerif,
+                        color = BrandColor
+                    ),
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    thickness = 1.dp,
+                    color = ProgressBarBgColor
+                )
+
+                Row(
+                    modifier = Modifier.padding(top = 12.dp)
+                ) {
+
+                    Icon(
+                        imageVector = Infinite,
+                        contentDescription = null,
+                        tint = BrandColor,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .align(Alignment.CenterVertically),
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 6.dp),
+                        text = stringResource(R.string.no_target_set_title),
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = FontFamily.SansSerif,
+                            color = BrandColor
+                        ),
+                    )
+                }
             }
 
             if (progress != null) {
@@ -286,7 +332,8 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                             fontSize = 15.sp,
                             color = Color.DarkGray,
                             fontWeight = FontWeight.SemiBold,
-                            fontFamily = FontFamily.SansSerif
+                            fontFamily = FontFamily.SansSerif,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }

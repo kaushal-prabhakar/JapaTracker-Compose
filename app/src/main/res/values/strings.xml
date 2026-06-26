@@ -68,7 +68,8 @@
     <string name="target_label">Target</string>
     <string name="current_count_label">Current Count</string>
     <string name="progress_percentage">Progress: %d%%</string>
-    <string name="no_target_set">No specific Target set for this Japa</string>
+    <string name="no_target_set_description">No specific Target set for this Japa</string>
+    <string name="no_target_set_title">No Target Set</string>
 
     <!-- Status Labels -->
     <string name="status_not_started">Not Started</string>
