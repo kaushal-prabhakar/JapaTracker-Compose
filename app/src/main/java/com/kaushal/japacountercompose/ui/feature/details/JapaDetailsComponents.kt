@@ -87,6 +87,7 @@ import com.kaushal.japacountercompose.ui.theme.Completed
 import com.kaushal.japacountercompose.ui.theme.ErrorRed
 import com.kaushal.japacountercompose.ui.theme.JapaCardColor
 import com.kaushal.japacountercompose.ui.theme.SuccessGreen
+import com.kaushal.japacountercompose.ui.theme.LightTextColor
 import com.kaushal.japacountercompose.ui.toTitleCase
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -260,6 +261,8 @@ fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
     )
 
     val hasTargetCount = japaInfo.target != null
+    val brand = BrandColor
+    val brandAlpha = BrandColor.copy(alpha = 0.2f)
 
     Column(
         modifier = Modifier
@@ -276,14 +279,14 @@ fun HeroHeaderSection(japaInfo: JapaInfoEntities) {
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawCircle(
-                    color = BrandColor.copy(alpha = 0.2f),
+                    color = brandAlpha,
                     style = Stroke(width = 14.dp.toPx(), cap = StrokeCap.Round)
                 )
             }
 
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawArc(
-                    color = BrandColor,
+                    color = brand,
                     startAngle = -90f,
                     sweepAngle = 360 * animatedProgress,
                     useCenter = false,
@@ -392,7 +395,7 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
                         text = japaInfo.lastUpdatedTime,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontFamily = FontFamily.Monospace,
-                            color = Color.DarkGray
+                            color = LightTextColor
                         )
                     )
                 }
@@ -447,7 +450,7 @@ fun PreviousSessionDetails(japaInfo: JapaInfoEntities) {
                             },
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontFamily = FontFamily.Monospace,
-                            color = Color.DarkGray
+                            color = LightTextColor
                         )
                     )
                 }
@@ -467,7 +470,7 @@ fun UpdateCountBottomSheet(
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = { BottomSheetDefaults.DragHandle() }
     ) {
         UpdateCountBottomSheetContent(
@@ -574,7 +577,7 @@ fun UpdateCountBottomSheetContent(
                 .fillMaxWidth()
                 .padding(top = 8.dp, bottom = 16.dp),
             textAlign = TextAlign.Start,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 14.sp,
             fontFamily = FontFamily.Monospace
         )

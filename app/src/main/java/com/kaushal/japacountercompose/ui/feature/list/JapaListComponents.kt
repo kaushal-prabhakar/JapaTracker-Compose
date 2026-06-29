@@ -173,7 +173,7 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = JapaCardColor,
-            contentColor = Color.Black
+            contentColor = MaterialTheme.colorScheme.onSurface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         border = CardDefaults.outlinedCardBorder(),
@@ -330,7 +330,7 @@ fun JapaCard(japaInfoEntities: JapaInfoEntities, onClick: () -> Unit) {
                         Text(
                             text = statusInfo.statusName,
                             fontSize = 15.sp,
-                            color = Color.DarkGray,
+                            color = LightTextColor,
                             fontWeight = FontWeight.SemiBold,
                             fontFamily = FontFamily.SansSerif,
                             textAlign = TextAlign.Center
@@ -367,7 +367,7 @@ fun DisplayEmptyListMessage() {
                 lineHeight = 24.sp
             ),
             textAlign = TextAlign.Center,
-            color = Color.Gray
+            color = LightTextColor
         )
     }
 }

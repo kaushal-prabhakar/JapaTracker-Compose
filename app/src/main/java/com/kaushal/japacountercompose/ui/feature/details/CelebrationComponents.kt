@@ -56,7 +56,7 @@ fun CelebrationOverlay(visible: Boolean) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .background(Color.White, RoundedCornerShape(24.dp))
+                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(24.dp))
                     .padding(32.dp)
             ) {
                 Icon(
@@ -77,7 +77,7 @@ fun CelebrationOverlay(visible: Boolean) {
                 Text(
                     text = stringResource(id = R.string.celebration_goal_reached),
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontFamily = FontFamily.Monospace
                     )
                 )
@@ -95,8 +95,9 @@ fun CelebrationOverlay(visible: Boolean) {
 private fun ConfettiParticle() {
     val xPos = remember { Random.nextInt(0, 1000).toFloat() }
     val yPos = remember { Animatable(-100f) }
-    val color = remember {
-        listOf(SuccessGreen, BrandColor, Color.Yellow, Color.Cyan).random()
+    val brand = BrandColor
+    val color = remember(brand) {
+        listOf(SuccessGreen, brand, Color.Yellow, Color.Cyan).random()
     }
 
     LaunchedEffect(Unit) {

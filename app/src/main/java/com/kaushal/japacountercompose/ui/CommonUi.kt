@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,6 +40,7 @@ import com.kaushal.japacountercompose.ui.theme.Active
 import com.kaushal.japacountercompose.ui.theme.BrandColor
 import com.kaushal.japacountercompose.ui.theme.Completed
 import com.kaushal.japacountercompose.ui.theme.NotStarted
+import com.kaushal.japacountercompose.ui.theme.LightTextColor
 
 @Composable
 fun CustomLargeButton(onClick: () -> Unit, label: String, enabled: Boolean = true) {
@@ -200,12 +202,12 @@ fun InfoRow(label: String, value: String) {
         Text(
             text = label,
             fontWeight = FontWeight.Medium,
-            color = Color.DarkGray
+            color = LightTextColor
         )
         Text(
             text = value,
             fontWeight = FontWeight.SemiBold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

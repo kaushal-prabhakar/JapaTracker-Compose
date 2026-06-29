@@ -10,7 +10,7 @@
     <string name="new_count_value_description">Enter the count to add or deduct.</string>
 
     <!--app bar titles-->
-    <string name="japa_list">Japa List</string>
+    <string name="japa_list">My Japas</string>
     <string name="add_new_japa">Add New Japa</string>
     <string name="japa_details">Japa Details</string>
     <string name="new_japa">New Japa</string>
