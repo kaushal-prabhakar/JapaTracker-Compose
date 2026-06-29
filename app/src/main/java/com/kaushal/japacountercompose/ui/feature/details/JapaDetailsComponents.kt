@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -492,7 +493,8 @@ fun UpdateCountBottomSheetContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()) // adding these two properties to make the update button appear fully when keyboard is opened.
+            .imePadding()
             .padding(start = 24.dp, end = 24.dp, bottom = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
