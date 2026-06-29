@@ -30,6 +30,6 @@ fun JapaInfoDBEntity.toJapaInfoEntities(): JapaInfoEntities {
         currentCount = this.currentCount,
         lastUpdatedValue = this.updatedValue,
         lastUpdatedType = this.updatedType,
-        lastUpdatedTime = this.lastUpdatedTime.format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"))
+        lastUpdatedTime = this.lastUpdatedTime.format(DateTimeFormatter.ofPattern("dd MMM yyyy • hh:mm a"))
     )
 }
